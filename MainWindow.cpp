@@ -19,3 +19,10 @@ void MainWindow::on_actionSearch_triggered()
     search_dialog.setModal(true);
     search_dialog.exec();
 }
+
+void MainWindow::on_actionPlaylist_triggered()
+{
+    PlaylistDialog playlist_dialog;
+    playlist_dialog.setModal(true);
+    playlist_dialog.exec();
+}

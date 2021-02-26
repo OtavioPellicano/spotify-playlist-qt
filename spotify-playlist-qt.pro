@@ -11,17 +11,20 @@ CONFIG += c++17
 SOURCES += \
     MainWindow.cpp \
     PlaylistDialog.cpp \
+    PlaylistWizardDialog.cpp \
     SearchDialog.cpp \
     main.cpp
 
 HEADERS += \
     MainWindow.hpp \
     PlaylistDialog.hpp \
+    PlaylistWizardDialog.hpp \
     SearchDialog.hpp
 
 FORMS += \
     MainWindow.ui \
     PlaylistDialog.ui \
+    PlaylistWizardDialog.ui \
     SearchDialog.ui
 
 # Default rules for deployment.

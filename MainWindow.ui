@@ -199,15 +199,15 @@
     <property name="title">
      <string>Músicas</string>
     </property>
-    <addaction name="actionSearch"/>
+    <addaction name="actionUser"/>
     <addaction name="actionPlaylist"/>
    </widget>
    <addaction name="menuMusicas"/>
   </widget>
   <widget class="QStatusBar" name="statusbar"/>
-  <action name="actionSearch">
+  <action name="actionUser">
    <property name="text">
-    <string>Buscar</string>
+    <string>Usuário</string>
    </property>
   </action>
   <action name="actionPlaylist">

@@ -13,16 +13,16 @@ MainWindow::~MainWindow()
     delete ui;
 }
 
-void MainWindow::on_actionSearch_triggered()
-{
-    SearchDialog search_dialog;
-    search_dialog.setModal(true);
-    search_dialog.exec();
-}
-
 void MainWindow::on_actionPlaylist_triggered()
 {
     PlaylistDialog playlist_dialog;
     playlist_dialog.setModal(true);
     playlist_dialog.exec();
+}
+
+void MainWindow::on_actionUser_triggered()
+{
+    UserDialog user_dialog;
+    user_dialog.setModal(true);
+    user_dialog.exec();
 }

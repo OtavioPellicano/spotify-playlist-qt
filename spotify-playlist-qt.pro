@@ -13,19 +13,22 @@ SOURCES += \
     PlaylistDialog.cpp \
     PlaylistWizardDialog.cpp \
     SearchDialog.cpp \
+    UserDialog.cpp \
     main.cpp
 
 HEADERS += \
     MainWindow.hpp \
     PlaylistDialog.hpp \
     PlaylistWizardDialog.hpp \
-    SearchDialog.hpp
+    SearchDialog.hpp \
+    UserDialog.hpp
 
 FORMS += \
     MainWindow.ui \
     PlaylistDialog.ui \
     PlaylistWizardDialog.ui \
-    SearchDialog.ui
+    SearchDialog.ui \
+    UserDialog.ui
 
 # Default rules for deployment.
 qnx: target.path = /tmp/$${TARGET}/bin

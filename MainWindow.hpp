@@ -4,7 +4,7 @@
 #include <QMainWindow>
 
 #include "PlaylistDialog.hpp"
-#include "SearchDialog.hpp"
+#include "UserDialog.hpp"
 
 namespace Ui
 {
@@ -20,9 +20,8 @@ class MainWindow : public QMainWindow
     ~MainWindow();
 
   private slots:
-    void on_actionSearch_triggered();
-
     void on_actionPlaylist_triggered();
+    void on_actionUser_triggered();
 
   private:
     Ui::MainWindow *ui;

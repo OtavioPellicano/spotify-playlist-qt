@@ -15,14 +15,12 @@ MainWindow::~MainWindow()
 
 void MainWindow::on_actionPlaylist_triggered()
 {
-    PlaylistDialog playlist_dialog;
-    playlist_dialog.setModal(true);
-    playlist_dialog.exec();
+    m_playlist_dialog = std::make_unique<PlaylistDialog>(this);
+    m_playlist_dialog->exec();
 }
 
 void MainWindow::on_actionUser_triggered()
 {
-    UserDialog user_dialog;
-    user_dialog.setModal(true);
-    user_dialog.exec();
+    m_user_dialog = std::make_unique<UserDialog>(this);
+    m_user_dialog->exec();
 }

@@ -13,6 +13,7 @@ SOURCES += \
     player/src/PlaylistDialog.cpp \
     player/src/PlaylistWizardDialog.cpp \
     player/src/SearchDialog.cpp \
+    player/src/UserConfig.cpp \
     player/src/UserDialog.cpp \
     player/src/main.cpp
 
@@ -21,6 +22,7 @@ HEADERS += \
     player/src/PlaylistDialog.hpp \
     player/src/PlaylistWizardDialog.hpp \
     player/src/SearchDialog.hpp \
+    player/src/UserConfig.hpp \
     player/src/UserDialog.hpp
 
 FORMS += \

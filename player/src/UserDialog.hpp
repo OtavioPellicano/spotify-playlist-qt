@@ -1,5 +1,5 @@
-#ifndef USERDIALOG_HPP
-#define USERDIALOG_HPP
+#ifndef USERDIALOG_H
+#define USERDIALOG_H
 
 #include <QDialog>
 
@@ -19,4 +19,4 @@ class UserDialog : public QDialog
     Ui::UserDialog *ui;
 };
 
-#endif // USERDIALOG_HPP
+#endif // USERDIALOG_H

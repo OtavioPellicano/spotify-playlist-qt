@@ -1,5 +1,5 @@
-#ifndef SEARCHDIALOG_HPP
-#define SEARCHDIALOG_HPP
+#ifndef SEARCHDIALOG_H
+#define SEARCHDIALOG_H
 
 #include <QDialog>
 
@@ -19,4 +19,4 @@ class SearchDialog : public QDialog
     Ui::SearchDialog *ui;
 };
 
-#endif // SEARCHDIALOG_HPP
+#endif // SEARCHDIALOG_H

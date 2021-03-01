@@ -1,5 +1,5 @@
-#ifndef PLAYLISTWIZARDDIALOG_HPP
-#define PLAYLISTWIZARDDIALOG_HPP
+#ifndef PLAYLISTWIZARDDIALOG_H
+#define PLAYLISTWIZARDDIALOG_H
 
 #include <QDialog>
 
@@ -25,4 +25,4 @@ class PlaylistWizardDialog : public QDialog
     Ui::PlaylistWizardDialog *ui;
 };
 
-#endif // PLAYLISTWIZARDDIALOG_HPP
+#endif // PLAYLISTWIZARDDIALOG_H

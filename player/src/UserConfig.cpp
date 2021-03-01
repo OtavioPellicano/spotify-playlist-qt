@@ -1,9 +1,5 @@
 #include "UserConfig.hpp"
 
-UserConfig::UserConfig()
-{
-}
-
 const UserData &UserConfig::user_data()
 {
     this->read_user_data();

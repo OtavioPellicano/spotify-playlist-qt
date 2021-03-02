@@ -200,6 +200,7 @@
      <string>Músicas</string>
     </property>
     <addaction name="actionUser"/>
+    <addaction name="actionConnectAPI"/>
     <addaction name="actionPlaylist"/>
    </widget>
    <addaction name="menuMusicas"/>
@@ -213,6 +214,11 @@
   <action name="actionPlaylist">
    <property name="text">
     <string>Playlist</string>
+   </property>
+  </action>
+  <action name="actionConnectAPI">
+   <property name="text">
+    <string>Conectar API</string>
    </property>
   </action>
  </widget>

@@ -38,7 +38,9 @@ void UserDialog::on_pushButtonOk_clicked()
     }
     else
     {
-        m_user_config.update_user_data(client_id, client_secret);
+        m_user_config.save_user_data(client_id, client_secret);
+        m_user_config.update();
+        emit this->user_config_changed(m_user_config);
         this->accept();
     }
 }

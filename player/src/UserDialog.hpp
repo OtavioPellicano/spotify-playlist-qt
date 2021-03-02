@@ -22,6 +22,9 @@ class UserDialog : public QDialog
   private slots:
     void on_pushButtonOk_clicked();
 
+  signals:
+    void user_config_changed(const UserConfig &user_config);
+
   private:
     void update_gui();
 

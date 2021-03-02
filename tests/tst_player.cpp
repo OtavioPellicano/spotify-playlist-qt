@@ -37,6 +37,9 @@ void TestPlayer::test_user_config()
     QVERIFY(user_data.client_secret == "Pellicano");
     QVERIFY(user_data.access_token_url == "https://accounts.spotify.com/api/token");
     QVERIFY(user_data.auth_url == "https://accounts.spotify.com/authorize");
+    QVERIFY(user_data.api_url == "https://api.spotify.com");
+    QVERIFY(user_data.api_version == "v1");
+    QVERIFY(user_data.base_url == "https://api.spotify.com/v1");
 }
 
 QTEST_MAIN(TestPlayer)

@@ -14,6 +14,9 @@ struct UserData
     std::string client_secret = "";
     const std::string access_token_url = "https://accounts.spotify.com/api/token";
     const std::string auth_url = "https://accounts.spotify.com/authorize";
+    const std::string api_url = "https://api.spotify.com";
+    const std::string api_version = "v1";
+    const std::string base_url = api_url + "/" + api_version;
 };
 
 /**

@@ -1,4 +1,4 @@
-#include "MainWindow.hpp"
+#include "client/dialog/MainWindow.hpp"
 
 #include <QApplication>
 

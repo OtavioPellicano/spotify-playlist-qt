@@ -41,3 +41,9 @@ void MainWindow::update_connect_push_button()
 {
     ui->actionConnectAPI->setEnabled(m_user_config->updated());
 }
+
+void MainWindow::on_actionConnectAPI_triggered()
+{
+    m_spotify = std::make_unique<Spotify>(this, *m_user_config.get());
+    m_spotify->spotify().grant();
+}

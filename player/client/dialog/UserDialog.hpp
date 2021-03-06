@@ -4,7 +4,7 @@
 #include <QDialog>
 #include <QMessageBox>
 
-#include "UserConfig.hpp"
+#include "core/UserConfig.hpp"
 
 namespace Ui
 {

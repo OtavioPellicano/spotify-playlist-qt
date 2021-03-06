@@ -21,16 +21,16 @@ UserDialog::~UserDialog()
 void UserDialog::update_gui()
 {
     auto user_data = m_user_config.user_data();
-    ui->lineEditClientID->setText(QString::fromStdString(user_data.client_id));
-    ui->lineEditClientSecret->setText(QString::fromStdString(user_data.client_secret));
+    ui->lineEditClientID->setText(user_data.client_id);
+    ui->lineEditClientSecret->setText(user_data.client_secret);
 }
 
 void UserDialog::on_pushButtonOk_clicked()
 {
-    auto client_id = ui->lineEditClientID->text().toStdString();
-    auto client_secret = ui->lineEditClientSecret->text().toStdString();
+    auto client_id = ui->lineEditClientID->text();
+    auto client_secret = ui->lineEditClientSecret->text();
 
-    if (client_id.empty() || client_secret.empty())
+    if (client_id.isEmpty() || client_secret.isEmpty())
     {
         QMessageBox msg(this);
         msg.setText("Atualize os dois campos");

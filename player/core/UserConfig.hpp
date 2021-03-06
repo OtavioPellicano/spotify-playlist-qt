@@ -1,6 +1,7 @@
 #ifndef USERCONFIG_HPP
 #define USERCONFIG_HPP
 
+#include <QString>
 #include <fstream>
 #include <string>
 
@@ -10,13 +11,13 @@
  */
 struct UserData
 {
-    std::string client_id = "";
-    std::string client_secret = "";
-    const std::string access_token_url = "https://accounts.spotify.com/api/token";
-    const std::string auth_url = "https://accounts.spotify.com/authorize";
-    const std::string api_url = "https://api.spotify.com";
-    const std::string api_version = "v1";
-    const std::string base_url = api_url + "/" + api_version;
+    QString client_id = "";
+    QString client_secret = "";
+    const QString access_token_url = "https://accounts.spotify.com/api/token";
+    const QString auth_url = "https://accounts.spotify.com/authorize";
+    const QString api_url = "https://api.spotify.com";
+    const QString api_version = "v1";
+    const QString base_url = api_url + "/" + api_version;
 };
 
 /**
@@ -45,7 +46,7 @@ class UserConfig
      * @param client_id
      * @param client_secret
      */
-    void save_user_data(const std::string &client_id, const std::string &client_secret);
+    void save_user_data(const QString &client_id, const QString &client_secret);
 
     bool updated() const;
 

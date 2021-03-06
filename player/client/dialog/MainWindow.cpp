@@ -31,9 +31,7 @@ void MainWindow::on_actionPlaylist_triggered()
 void MainWindow::on_actionUser_triggered()
 {
     m_user_dialog = std::make_unique<UserDialog>(this);
-    connect(
-        m_user_dialog.get(), SIGNAL(user_config_changed(const UserConfig &)), this,
-        SLOT(on_user_config_changed(const UserConfig &)));
+    connect(m_user_dialog.get(), &UserDialog::user_config_changed, this, &MainWindow::on_user_config_changed);
     m_user_dialog->exec();
 }
 
@@ -44,6 +42,14 @@ void MainWindow::update_connect_push_button()
 
 void MainWindow::on_actionConnectAPI_triggered()
 {
-    m_spotify = std::make_unique<Spotify>(this, *m_user_config.get());
-    m_spotify->spotify().grant();
+    if (m_spotify == nullptr)
+    {
+        m_spotify = std::make_unique<Spotify>(this, *m_user_config.get());
+    }
+    else
+    {
+        auto msg_box = QMessageBox(this);
+        msg_box.setText("Você já está conectado!");
+        msg_box.exec();
+    }
 }

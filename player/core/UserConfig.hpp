@@ -1,6 +1,7 @@
 #ifndef USERCONFIG_HPP
 #define USERCONFIG_HPP
 
+#include <QString>
 #include <fstream>
 #include <string>
 
@@ -10,10 +11,13 @@
  */
 struct UserData
 {
-    std::string client_id = "";
-    std::string client_secret = "";
-    const std::string access_token_url = "https://accounts.spotify.com/api/token";
-    const std::string auth_url = "https://accounts.spotify.com/authorize";
+    QString client_id = "";
+    QString client_secret = "";
+    const QString access_token_url = "https://accounts.spotify.com/api/token";
+    const QString auth_url = "https://accounts.spotify.com/authorize";
+    const QString api_url = "https://api.spotify.com";
+    const QString api_version = "v1";
+    const QString base_url = api_url + "/" + api_version;
 };
 
 /**
@@ -24,11 +28,11 @@ struct UserData
 class UserConfig
 {
   public:
-    UserConfig() = default;
+    UserConfig();
 
     /**
      * @brief user_data
-     * This method will call UserConfig::read_user_data and return the UserData updated
+     * This method will return the UserData updated
      * @see UserConfig::read_user_data
      * @return
      * UserData as const UserData&
@@ -36,25 +40,27 @@ class UserConfig
     const UserData &user_data();
 
     /**
-     * @brief update_user_data
+     * @brief save_user_data
      * This method update the .config file with the values of client_id and client_secret
      * If there is no .config file, a new one is created
      * @param client_id
      * @param client_secret
      */
-    void update_user_data(const std::string &client_id, const std::string &client_secret) const;
+    void save_user_data(const QString &client_id, const QString &client_secret);
 
-  private:
+    bool updated() const;
+
     /**
-     * @brief read_user_data
+     * @brief update
      * This method read the .config file and update the UserData member data
      * if there is no .config file, no update is made at all. So, client id and secret id will be set to empty
      */
-    void read_user_data();
+    void update();
 
   private:
     UserData m_user_data;
-    const std::string m_file_name = ".config";
+    const std::string m_file_name = ".user_config";
+    bool m_updated = false;
 };
 
 #endif // USERCONFIG_HPP

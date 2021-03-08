@@ -5,9 +5,9 @@ Player::Player(QObject *parent)
 {
 }
 
-QVector<Track> Player::search_track(const QString &criteria)
+QVector<Track> Player::search_track(const QString &criteria, int limit)
 {
-    this->set_tracks(Spotify::search_track(criteria));
+    this->set_tracks(Spotify::search_track(criteria, limit));
 
     return m_tracks;
 }

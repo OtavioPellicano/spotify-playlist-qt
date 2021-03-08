@@ -28,17 +28,17 @@ class Spotify : public QObject
     void update_spotify_user_config();
     enum class SearchType
     {
-        artist,
-        album,
+        //        artist,
+        //        album,
         track
     };
-    QJsonObject search(const QString &criteria, SearchType search_type);
+    QJsonObject search(const QString &criteria, SearchType search_type, int limit);
     QJsonObject request_get(const QString &parameters);
 
   public:
-    QJsonObject search_artist(const QString &criteria);
-    QJsonObject search_album(const QString &criteria);
-    QJsonObject search_track(const QString &criteria);
+    //    QJsonObject search_artist(const QString &criteria);
+    //    QJsonObject search_album(const QString &criteria);
+    QJsonObject search_track(const QString &criteria, int limit);
 
     bool is_granted() const;
 

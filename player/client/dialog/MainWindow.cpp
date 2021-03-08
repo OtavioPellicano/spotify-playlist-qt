@@ -8,11 +8,11 @@ MainWindow::MainWindow(QWidget *parent)
     ui->setupUi(this);
 
     m_user_config = std::make_unique<UserConfig>();
-    this->update_connect_push_button();
+    this->updateConnectPushButton();
 
-    this->setup_table(ui->tableWidgetSearch);
-    this->setup_table(ui->tableWidgetTracks);
-    this->set_enabled_all_group_box(false);
+    this->setupTable(ui->tableWidgetSearch);
+    this->setupTable(ui->tableWidgetTracks);
+    this->setEnabledAllGroupBox(false);
 }
 
 MainWindow::~MainWindow()
@@ -20,25 +20,25 @@ MainWindow::~MainWindow()
     delete ui;
 }
 
-void MainWindow::on_user_config_changed(const UserConfig &user_config)
+void MainWindow::userConfigChanged(const UserConfig &user_config)
 {
     m_user_config = std::make_unique<UserConfig>(user_config);
-    this->update_connect_push_button();
+    this->updateConnectPushButton();
 }
 
 void MainWindow::on_actionUser_triggered()
 {
     m_user_dialog = std::make_unique<UserDialog>(this);
-    connect(m_user_dialog.get(), &UserDialog::user_config_changed, this, &MainWindow::on_user_config_changed);
+    connect(m_user_dialog.get(), &UserDialog::userConfigChanged, this, &MainWindow::userConfigChanged);
     m_user_dialog->exec();
 }
 
-void MainWindow::update_connect_push_button()
+void MainWindow::updateConnectPushButton()
 {
     ui->actionConnectAPI->setEnabled(m_user_config->updated());
 }
 
-void MainWindow::setup_table(QTableWidget *table)
+void MainWindow::setupTable(QTableWidget *table)
 {
     table->verticalHeader()->setVisible(false);
     table->setSelectionBehavior(QAbstractItemView::SelectRows);
@@ -47,7 +47,7 @@ void MainWindow::setup_table(QTableWidget *table)
     table->setEditTriggers(QAbstractItemView::NoEditTriggers);
 }
 
-void MainWindow::set_enabled_all_group_box(bool enabled)
+void MainWindow::setEnabledAllGroupBox(bool enabled)
 {
     ui->groupBoxPlaylist->setEnabled(enabled);
     ui->groupBoxCurrentSong->setEnabled(enabled);
@@ -60,11 +60,11 @@ void MainWindow::on_actionConnectAPI_triggered()
     if (m_player == nullptr)
     {
         m_player = std::make_unique<Player>(this);
-        this->set_enabled_all_group_box(true);
+        this->setEnabledAllGroupBox(true);
     }
     else
     {
-        if (m_player->is_granted())
+        if (m_player->isGranted())
         {
             auto msg_box = QMessageBox(this);
             msg_box.setText("Você já está conectado!");
@@ -73,14 +73,14 @@ void MainWindow::on_actionConnectAPI_triggered()
         else
         {
             m_player = nullptr;
-            this->set_enabled_all_group_box(false);
+            this->setEnabledAllGroupBox(false);
         }
     }
 }
 
 void MainWindow::on_lineEditSearch_returnPressed()
 {
-    auto tracks = m_player->search_track(ui->lineEditSearch->text());
+    auto tracks = m_player->searchTrack(ui->lineEditSearch->text());
 
     ui->tableWidgetSearch->clearContents();
     ui->tableWidgetSearch->setRowCount(tracks.size());
@@ -88,7 +88,7 @@ void MainWindow::on_lineEditSearch_returnPressed()
     std::size_t row = 0;
     for (auto it_track = tracks.begin(); it_track != tracks.end(); ++it_track, ++row)
     {
-        ui->tableWidgetSearch->setItem(row, 0, new QTableWidgetItem(it_track->track_parameters().name));
-        ui->tableWidgetSearch->setItem(row, 1, new QTableWidgetItem(it_track->track_parameters().artist));
+        ui->tableWidgetSearch->setItem(row, 0, new QTableWidgetItem(it_track->trackParameters().name));
+        ui->tableWidgetSearch->setItem(row, 1, new QTableWidgetItem(it_track->trackParameters().artist));
     }
 }

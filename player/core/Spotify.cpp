@@ -4,7 +4,7 @@ Spotify::Spotify(QObject *parent)
     : QObject(parent)
 {
 
-    this->update_spotify_user_config();
+    this->updateSpotifyUserConfig();
 
     connect(&m_spotify_api, &QOAuth2AuthorizationCodeFlow::authorizeWithBrowser, &QDesktopServices::openUrl);
     connect(&m_spotify_api, &QOAuth2AuthorizationCodeFlow::granted, this, &Spotify::granted);
@@ -32,7 +32,7 @@ void Spotify::statusChanged(QAbstractOAuth::Status status)
     case QAbstractOAuth::Status::RefreshingToken:
         qDebug() << "RefreshingToken!";
         // Token update
-        m_spotify_api.post(QUrl(m_user_config.user_data().access_token_url));
+        m_spotify_api.post(QUrl(m_user_config.userData().access_token_url));
         m_is_granted = true;
         break;
     default:
@@ -40,10 +40,10 @@ void Spotify::statusChanged(QAbstractOAuth::Status status)
     }
 }
 
-void Spotify::update_spotify_user_config()
+void Spotify::updateSpotifyUserConfig()
 {
     m_reply_handler = std::make_unique<QOAuthHttpServerReplyHandler>(8080, this);
-    auto user_data = m_user_config.user_data();
+    auto user_data = m_user_config.userData();
 
     m_spotify_api.setReplyHandler(m_reply_handler.get());
     m_spotify_api.setAuthorizationUrl(QUrl(user_data.auth_url));
@@ -88,13 +88,13 @@ QJsonObject Spotify::search(const QString &criteria, SearchType search_type, int
         break;
     }
 
-    return this->request_get(
+    return this->requestGet(
         "search?q=" + criteria + "&type=" + q_type + "&limit=" + QString::number(limit) + "&market=from_token");
 }
 
-QJsonObject Spotify::request_get(const QString &parameters)
+QJsonObject Spotify::requestGet(const QString &parameters)
 {
-    auto reply = m_spotify_api.get(QUrl(m_user_config.user_data().base_url + "/" + parameters));
+    auto reply = m_spotify_api.get(QUrl(m_user_config.userData().base_url + "/" + parameters));
 
     while (!reply->isFinished())
     {
@@ -114,12 +114,12 @@ QJsonObject Spotify::request_get(const QString &parameters)
     }
 }
 
-QJsonObject Spotify::search_track(const QString &criteria, int limit)
+QJsonObject Spotify::searchTrack(const QString &criteria, int limit)
 {
     return this->search(criteria, SearchType::track, limit);
 }
 
-bool Spotify::is_granted() const
+bool Spotify::isGranted() const
 {
     return m_is_granted;
 }

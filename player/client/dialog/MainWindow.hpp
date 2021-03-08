@@ -24,7 +24,7 @@ class MainWindow : public QMainWindow
     ~MainWindow();
 
   public slots:
-    void on_user_config_changed(const UserConfig &user_config);
+    void userConfigChanged(const UserConfig &user_config);
 
   private slots:
     void on_actionUser_triggered();
@@ -34,10 +34,10 @@ class MainWindow : public QMainWindow
     void on_lineEditSearch_returnPressed();
 
   private:
-    void update_connect_push_button();
+    void updateConnectPushButton();
 
-    void setup_table(QTableWidget *table);
-    void set_enabled_all_group_box(bool enabled);
+    void setupTable(QTableWidget *table);
+    void setEnabledAllGroupBox(bool enabled);
 
   private:
     Ui::MainWindow *ui;

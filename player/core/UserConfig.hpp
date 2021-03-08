@@ -37,7 +37,7 @@ class UserConfig
      * @return
      * UserData as const UserData&
      */
-    const UserData &user_data();
+    const UserData &userData();
 
     /**
      * @brief save_user_data
@@ -46,7 +46,7 @@ class UserConfig
      * @param client_id
      * @param client_secret
      */
-    void save_user_data(const QString &client_id, const QString &client_secret);
+    void saveUserData(const QString &client_id, const QString &client_secret);
 
     bool updated() const;
 

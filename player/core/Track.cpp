@@ -16,10 +16,10 @@ Track::Track(const QJsonObject &item)
     m_track_parameters.duration = track.contains("duration_ms") ? track["duration_ms"].toInt() : 0;
 
     qDebug() << "TRACK INFO:";
-    qDebug() << m_track_parameters.to_string();
+    qDebug() << m_track_parameters.toString();
 }
 
-TrackParameters Track::track_parameters() const
+TrackParameters Track::trackParameters() const
 {
     return m_track_parameters;
 }

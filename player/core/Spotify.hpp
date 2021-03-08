@@ -25,7 +25,7 @@ class Spotify : public QObject
     void statusChanged(QAbstractOAuth::Status status);
 
   private:
-    void update_spotify_user_config();
+    void updateSpotifyUserConfig();
     enum class SearchType
     {
         //        artist,
@@ -33,14 +33,14 @@ class Spotify : public QObject
         track
     };
     QJsonObject search(const QString &criteria, SearchType search_type, int limit);
-    QJsonObject request_get(const QString &parameters);
+    QJsonObject requestGet(const QString &parameters);
 
   public:
     //    QJsonObject search_artist(const QString &criteria);
     //    QJsonObject search_album(const QString &criteria);
-    QJsonObject search_track(const QString &criteria, int limit);
+    QJsonObject searchTrack(const QString &criteria, int limit);
 
-    bool is_granted() const;
+    bool isGranted() const;
 
   private:
     UserConfig m_user_config;

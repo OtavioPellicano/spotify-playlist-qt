@@ -5,14 +5,14 @@ Player::Player(QObject *parent)
 {
 }
 
-QVector<Track> Player::search_track(const QString &criteria, int limit)
+QVector<Track> Player::searchTrack(const QString &criteria, int limit)
 {
-    this->set_tracks(Spotify::search_track(criteria, limit));
+    this->setTracks(Spotify::searchTrack(criteria, limit));
 
     return m_tracks;
 }
 
-void Player::set_tracks(const QJsonObject &json)
+void Player::setTracks(const QJsonObject &json)
 {
     m_tracks.clear();
     m_tracks.reserve(json["tracks"].toObject()["total"].toInt());

@@ -10,10 +10,10 @@ class Player : public Spotify
 {
   public:
     explicit Player(QObject *parent = nullptr);
-    QVector<Track> search_track(const QString &criteria, int limit = 10);
+    QVector<Track> searchTrack(const QString &criteria, int limit = 10);
 
   private:
-    void set_tracks(const QJsonObject &json);
+    void setTracks(const QJsonObject &json);
 
     QVector<Track> m_tracks;
 };

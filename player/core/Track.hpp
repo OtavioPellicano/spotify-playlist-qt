@@ -15,7 +15,7 @@ struct TrackParameters
 
   private:
     // help to debug
-    QString to_string(const QString &sep = ",")
+    QString toString(const QString &sep = ",")
     {
         return QStringList({name, id, album, album_id, artist, artist_id, QString::number(duration)}).join(sep);
     }
@@ -27,7 +27,7 @@ class Track
   public:
     explicit Track(const QJsonObject &item);
 
-    TrackParameters track_parameters() const;
+    TrackParameters trackParameters() const;
 
   private:
     TrackParameters m_track_parameters;

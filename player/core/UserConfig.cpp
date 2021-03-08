@@ -5,7 +5,7 @@ UserConfig::UserConfig()
     this->update();
 }
 
-const UserData &UserConfig::user_data()
+const UserData &UserConfig::userData()
 {
     if (!m_updated)
     {
@@ -35,7 +35,7 @@ bool UserConfig::updated() const
     return m_updated;
 }
 
-void UserConfig::save_user_data(const QString &client_id, const QString &client_secret)
+void UserConfig::saveUserData(const QString &client_id, const QString &client_secret)
 {
     // TODO: use QFile
     auto file = std::ofstream(m_file_name);

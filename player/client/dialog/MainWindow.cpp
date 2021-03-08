@@ -80,18 +80,15 @@ void MainWindow::on_actionConnectAPI_triggered()
 
 void MainWindow::on_lineEditSearch_returnPressed()
 {
-    auto names = m_player->search_track(ui->lineEditSearch->text());
+    auto tracks = m_player->search_track(ui->lineEditSearch->text());
 
     ui->tableWidgetSearch->clearContents();
+    ui->tableWidgetSearch->setRowCount(tracks.size());
 
-    ui->tableWidgetSearch->setRowCount(names.size());
     std::size_t row = 0;
-    for (auto it_list = names.begin(); it_list != names.end(); ++it_list, ++row)
+    for (auto it_track = tracks.begin(); it_track != tracks.end(); ++it_track, ++row)
     {
-        const auto line_split = it_list->split(",");
-        const auto &name = line_split[0];
-        const auto &artist = line_split[1];
-        ui->tableWidgetSearch->setItem(row, 0, new QTableWidgetItem(name));
-        ui->tableWidgetSearch->setItem(row, 1, new QTableWidgetItem(artist));
+        ui->tableWidgetSearch->setItem(row, 0, new QTableWidgetItem(it_track->track_parameters().name));
+        ui->tableWidgetSearch->setItem(row, 1, new QTableWidgetItem(it_track->track_parameters().artist));
     }
 }

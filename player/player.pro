@@ -10,7 +10,6 @@ CONFIG += c++17
 
 SOURCES += \
     core/Player.cpp \
-    core/SearchResults.cpp \
     core/Track.cpp \
     main.cpp \
     client/dialog/MainWindow.cpp \
@@ -22,7 +21,6 @@ HEADERS += \
     client/dialog/MainWindow.hpp \
     client/dialog/UserDialog.hpp \
     core/Player.hpp \
-    core/SearchResults.hpp \
     core/Track.hpp \
     core/UserConfig.hpp \
     core/Spotify.hpp

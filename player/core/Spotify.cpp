@@ -1,8 +1,7 @@
 #include "Spotify.hpp"
 
-Spotify::Spotify(QObject *parent, const UserConfig &user_config)
+Spotify::Spotify(QObject *parent)
     : QObject(parent)
-    , m_user_config(user_config)
 {
 
     this->update_spotify_user_config();
@@ -89,7 +88,10 @@ QJsonObject Spotify::search(const QString &criteria, SearchType search_type)
         break;
     }
 
-    return this->request_get("search?q=" + criteria + "&type=" + q_type);
+    // fix spaces to fit spotify web API
+    auto criteria_fixed = QStringList(criteria.split(" ")).join("%20");
+
+    return this->request_get("search?q=" + criteria_fixed + "&type=" + q_type + "&limit=10&market=from_token");
 }
 
 QJsonObject Spotify::request_get(const QString &parameters)
@@ -126,7 +128,7 @@ QJsonObject Spotify::search_album(const QString &criteria)
 
 QJsonObject Spotify::search_track(const QString &criteria)
 {
-    return this->search(criteria, SearchType::album);
+    return this->search(criteria, SearchType::track);
 }
 
 bool Spotify::is_granted() const

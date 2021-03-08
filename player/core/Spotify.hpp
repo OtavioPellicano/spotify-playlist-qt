@@ -18,7 +18,7 @@ class Spotify : public QObject
 {
     Q_OBJECT
   public:
-    explicit Spotify(QObject *parent = nullptr, const UserConfig &user_config = {});
+    explicit Spotify(QObject *parent = nullptr);
 
   private slots:
     void granted();

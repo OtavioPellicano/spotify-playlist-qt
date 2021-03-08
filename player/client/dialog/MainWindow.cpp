@@ -8,6 +8,9 @@ MainWindow::MainWindow(QWidget *parent)
     ui->setupUi(this);
 
     m_user_config = std::make_unique<UserConfig>();
+    m_playerlist_config = std::make_unique<PlaylistConfig>();
+    this->updataPlaylistTable();
+
     this->updateConnectPushButton();
 
     this->setupTable(ui->tableWidgetSearch);
@@ -55,6 +58,16 @@ void MainWindow::setEnabledAllGroupBox(bool enabled)
     ui->groupBoxSongs->setEnabled(enabled);
 }
 
+void MainWindow::updataPlaylistTable()
+{
+    auto data = m_playerlist_config->data();
+
+    for (auto &playlist_name : data)
+    {
+        ui->listWidgetPlaylist->addItem(playlist_name.first);
+    }
+}
+
 void MainWindow::on_actionConnectAPI_triggered()
 {
     if (m_player == nullptr)
@@ -80,15 +93,28 @@ void MainWindow::on_actionConnectAPI_triggered()
 
 void MainWindow::on_lineEditSearch_returnPressed()
 {
-    auto tracks = m_player->searchTrack(ui->lineEditSearch->text());
+    m_search_tracks = m_player->searchTrack(ui->lineEditSearch->text());
 
     ui->tableWidgetSearch->clearContents();
-    ui->tableWidgetSearch->setRowCount(tracks.size());
+    ui->tableWidgetSearch->setRowCount(m_search_tracks.size());
 
     std::size_t row = 0;
-    for (auto it_track = tracks.begin(); it_track != tracks.end(); ++it_track, ++row)
+    for (auto it_track = m_search_tracks.begin(); it_track != m_search_tracks.end(); ++it_track, ++row)
     {
         ui->tableWidgetSearch->setItem(row, 0, new QTableWidgetItem(it_track->trackParameters().name));
         ui->tableWidgetSearch->setItem(row, 1, new QTableWidgetItem(it_track->trackParameters().artist));
+    }
+}
+
+void MainWindow::on_actionNewPlaylist_triggered()
+{
+    bool ok;
+    QString name =
+        QInputDialog::getText(this, tr("Playlist"), tr("Nomde da Playlist:"), QLineEdit::Normal, tr(""), &ok);
+
+    if (ok && !name.isEmpty())
+    {
+        ui->listWidgetPlaylist->addItem(name);
+        m_playerlist_config->save(name);
     }
 }

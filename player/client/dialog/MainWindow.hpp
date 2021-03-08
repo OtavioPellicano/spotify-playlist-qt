@@ -2,6 +2,7 @@
 #define MAINWINDOW_H
 
 #include <QDebug>
+#include <QInputDialog>
 #include <QMainWindow>
 #include <QMessageBox>
 #include <QTableWidget>
@@ -9,6 +10,7 @@
 
 #include "UserDialog.hpp"
 #include "core/Player.hpp"
+#include "core/PlaylistConfig.hpp"
 
 namespace Ui
 {
@@ -33,17 +35,22 @@ class MainWindow : public QMainWindow
 
     void on_lineEditSearch_returnPressed();
 
+    void on_actionNewPlaylist_triggered();
+
   private:
     void updateConnectPushButton();
 
     void setupTable(QTableWidget *table);
     void setEnabledAllGroupBox(bool enabled);
+    void updataPlaylistTable();
 
   private:
     Ui::MainWindow *ui;
     std::unique_ptr<UserDialog> m_user_dialog;
     std::unique_ptr<UserConfig> m_user_config;
+    std::unique_ptr<PlaylistConfig> m_playerlist_config;
     std::unique_ptr<Player> m_player;
+    QVector<Track> m_search_tracks;
 };
 
 #endif // MAINWINDOW_H

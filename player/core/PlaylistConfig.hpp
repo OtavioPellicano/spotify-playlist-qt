@@ -2,13 +2,14 @@
 #define PLAYLISTCONFIG_HPP
 
 #include <QStringList>
+#include <algorithm>
 #include <fstream>
 #include <map>
 
 #include "Track.hpp"
 
-//<PlaylistName, track_id, trackParameters>
-typedef std::map<QString, std::map<QString, TrackParameters>> PlaylistData;
+//<Playlist, track_id>, trackParameters
+typedef std::map<std::pair<QString, QString>, TrackParameters> PlaylistData;
 
 class PlaylistConfig
 {

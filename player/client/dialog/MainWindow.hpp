@@ -37,12 +37,15 @@ class MainWindow : public QMainWindow
 
     void on_actionNewPlaylist_triggered();
 
+    void on_tableWidgetSearch_cellDoubleClicked(int row, int column);
+
   private:
     void updateConnectPushButton();
 
     void setupTable(QTableWidget *table);
     void setEnabledAllGroupBox(bool enabled);
     void updataPlaylistTable();
+    void addTrackToPlaylist(const QString &playlist_name, const TrackParameters &track_parameters);
 
   private:
     Ui::MainWindow *ui;

@@ -62,10 +62,22 @@ void MainWindow::updataPlaylistTable()
 {
     auto data = m_playerlist_config->data();
 
+    QStringList playlist_names;
     for (auto &playlist_name : data)
     {
-        ui->listWidgetPlaylist->addItem(playlist_name.first);
+        if (!playlist_names.contains(playlist_name.first.first))
+        {
+            playlist_names.append(playlist_name.first.first);
+        }
     }
+    ui->listWidgetPlaylist->addItems(playlist_names);
+}
+
+void MainWindow::addTrackToPlaylist(const QString &playlist_name, const TrackParameters &track_parameters)
+{
+    PlaylistData playlist_data;
+    playlist_data[{playlist_name, track_parameters.id}] = track_parameters;
+    m_playerlist_config->save(playlist_data);
 }
 
 void MainWindow::on_actionConnectAPI_triggered()
@@ -117,4 +129,26 @@ void MainWindow::on_actionNewPlaylist_triggered()
         ui->listWidgetPlaylist->addItem(name);
         m_playerlist_config->save(name);
     }
+}
+
+void MainWindow::on_tableWidgetSearch_cellDoubleClicked(int row, int column)
+{
+    qDebug() << ui->listWidgetPlaylist->currentRow();
+
+    QMessageBox msgbox;
+    if (ui->listWidgetPlaylist->currentRow() > -1)
+    {
+        QString playlist_name = ui->listWidgetPlaylist->currentItem()->text();
+        qDebug() << m_search_tracks[row].trackParameters().toString();
+        this->addTrackToPlaylist(playlist_name, m_search_tracks[row].trackParameters());
+        msgbox.setText(QString("Música adicionada em : %1").arg(playlist_name));
+        msgbox.exec();
+    }
+    else
+    {
+        msgbox.setText(tr("Escolha uma playlist para adicionar a música"));
+        msgbox.exec();
+    }
+
+    //    qDebug() << m_search_tracks[row].trackParameters().toString();
 }

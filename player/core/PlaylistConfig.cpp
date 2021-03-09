@@ -8,10 +8,10 @@ PlaylistConfig::PlaylistConfig()
 void PlaylistConfig::save(PlaylistData &playlist_data)
 {
     this->update();
+    m_playlist_data.merge(playlist_data);
     if (auto file = std::ofstream(m_file_name))
     {
         this->save_playlist_data(file, m_playlist_data);
-        this->save_playlist_data(file, playlist_data);
         m_updated = false;
         file.close();
     }
@@ -20,7 +20,7 @@ void PlaylistConfig::save(PlaylistData &playlist_data)
 void PlaylistConfig::save(const QString &playlist_name)
 {
     PlaylistData playlist_data;
-    playlist_data[playlist_name][""] = TrackParameters();
+    playlist_data[{playlist_name, ""}] = TrackParameters();
     this->save(playlist_data);
 }
 
@@ -29,11 +29,8 @@ void PlaylistConfig::save_playlist_data(std::ofstream &file, PlaylistData playli
     auto sep = QString(",");
     for (auto it_play = playlist_data.begin(); it_play != playlist_data.end(); ++it_play)
     {
-        for (auto it_id = it_play->second.begin(); it_id != it_play->second.end(); ++it_id)
-        {
-            auto res = QStringList{it_play->first, it_id->first, it_id->second.toString(sep)}.join(sep);
-            file << res.toStdString() << std::endl;
-        }
+        auto res = QStringList{it_play->first.first, it_play->first.second, it_play->second.toString(sep)}.join(sep);
+        file << res.toStdString() << std::endl;
     }
 }
 
@@ -72,13 +69,13 @@ void PlaylistConfig::updatePlaylistData(const QStringList &str_csv)
 {
     TrackParameters track_param;
     auto &playlist_name = str_csv[0];
-    track_param.name = str_csv[1];
-    track_param.id = str_csv[2];
-    track_param.album = str_csv[3];
-    track_param.album_id = str_csv[4];
-    track_param.artist = str_csv[5];
-    track_param.artist_id = str_csv[6];
-    track_param.duration = str_csv[7].toInt();
+    track_param.name = str_csv[2];
+    track_param.id = str_csv[3];
+    track_param.album = str_csv[4];
+    track_param.album_id = str_csv[5];
+    track_param.artist = str_csv[6];
+    track_param.artist_id = str_csv[7];
+    track_param.duration = str_csv[8].toInt();
 
-    m_playlist_data[playlist_name][track_param.id] = track_param;
+    m_playlist_data[{playlist_name, track_param.id}] = track_param;
 }

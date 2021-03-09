@@ -79,6 +79,16 @@
                  <string>Artista</string>
                 </property>
                </column>
+               <column>
+                <property name="text">
+                 <string>Album</string>
+                </property>
+               </column>
+               <column>
+                <property name="text">
+                 <string>Tamanho</string>
+                </property>
+               </column>
               </widget>
              </item>
             </layout>

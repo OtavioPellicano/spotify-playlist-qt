@@ -150,6 +150,11 @@ void MainWindow::on_lineEditSearch_returnPressed()
     {
         ui->tableWidgetSearch->setItem(row, 0, new QTableWidgetItem(it_track->trackParameters().name));
         ui->tableWidgetSearch->setItem(row, 1, new QTableWidgetItem(it_track->trackParameters().artist));
+        ui->tableWidgetSearch->setItem(row, 2, new QTableWidgetItem(it_track->trackParameters().album));
+        ui->tableWidgetSearch->setItem(
+            row, 3,
+            new QTableWidgetItem(
+                QDateTime::fromTime_t(it_track->trackParameters().duration / 1000).toUTC().toString("mm:ss")));
     }
 
     ui->lineEditSearch->setEnabled(true);

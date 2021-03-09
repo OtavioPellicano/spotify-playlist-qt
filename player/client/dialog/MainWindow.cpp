@@ -62,15 +62,13 @@ void MainWindow::updataPlaylistTable()
 {
     auto data = m_playerlist_config->data();
 
-    QStringList playlist_names;
+    m_playlist_names.clear();
     for (auto &playlist_name : data)
     {
-        if (!playlist_names.contains(playlist_name.first.first))
-        {
-            playlist_names.append(playlist_name.first.first);
-        }
+        m_playlist_names.insert(playlist_name.first.first);
     }
-    ui->listWidgetPlaylist->addItems(playlist_names);
+    ui->listWidgetPlaylist->clear();
+    ui->listWidgetPlaylist->addItems(m_playlist_names.values());
 }
 
 void MainWindow::addTrackToPlaylist(const QString &playlist_name, const TrackParameters &track_parameters)
@@ -78,6 +76,42 @@ void MainWindow::addTrackToPlaylist(const QString &playlist_name, const TrackPar
     PlaylistData playlist_data;
     playlist_data[{playlist_name, track_parameters.id}] = track_parameters;
     m_playerlist_config->save(playlist_data);
+    this->updataPlaylistTable();
+}
+
+void MainWindow::addTrackToPlaylist(const QString &playlist_name)
+{
+    this->addTrackToPlaylist(playlist_name, TrackParameters());
+}
+
+void MainWindow::updateTrackTable(const QString &playlist_name)
+{
+    auto data = m_playerlist_config->data();
+    QVector<QStringList> tracks;
+    m_playlist_tracks.clear();
+    for (auto &item : data)
+    {
+        if (!item.first.second.isEmpty() && item.first.first == playlist_name)
+        {
+            auto &param = item.second;
+            m_playlist_tracks.append(param);
+            tracks.append(QStringList(
+                {param.name, param.artist, param.album,
+                 QDateTime::fromTime_t(param.duration / 1000).toUTC().toString("mm:ss")}));
+        }
+    }
+
+    ui->tableWidgetTracks->clearContents();
+    ui->tableWidgetTracks->setRowCount(tracks.size());
+
+    for (int i = 0; i < tracks.size(); ++i)
+    {
+        auto item = tracks[i];
+        ui->tableWidgetTracks->setItem(i, 0, new QTableWidgetItem(item[0]));
+        ui->tableWidgetTracks->setItem(i, 1, new QTableWidgetItem(item[1]));
+        ui->tableWidgetTracks->setItem(i, 2, new QTableWidgetItem(item[2]));
+        ui->tableWidgetTracks->setItem(i, 3, new QTableWidgetItem(item[3]));
+    }
 }
 
 void MainWindow::on_actionConnectAPI_triggered()
@@ -105,6 +139,7 @@ void MainWindow::on_actionConnectAPI_triggered()
 
 void MainWindow::on_lineEditSearch_returnPressed()
 {
+    ui->lineEditSearch->setEnabled(false);
     m_search_tracks = m_player->searchTrack(ui->lineEditSearch->text());
 
     ui->tableWidgetSearch->clearContents();
@@ -116,22 +151,11 @@ void MainWindow::on_lineEditSearch_returnPressed()
         ui->tableWidgetSearch->setItem(row, 0, new QTableWidgetItem(it_track->trackParameters().name));
         ui->tableWidgetSearch->setItem(row, 1, new QTableWidgetItem(it_track->trackParameters().artist));
     }
+
+    ui->lineEditSearch->setEnabled(true);
 }
 
-void MainWindow::on_actionNewPlaylist_triggered()
-{
-    bool ok;
-    QString name =
-        QInputDialog::getText(this, tr("Playlist"), tr("Nomde da Playlist:"), QLineEdit::Normal, tr(""), &ok);
-
-    if (ok && !name.isEmpty())
-    {
-        ui->listWidgetPlaylist->addItem(name);
-        m_playerlist_config->save(name);
-    }
-}
-
-void MainWindow::on_tableWidgetSearch_cellDoubleClicked(int row, int column)
+void MainWindow::on_tableWidgetSearch_cellDoubleClicked(int row, int /*column*/)
 {
     qDebug() << ui->listWidgetPlaylist->currentRow();
 
@@ -140,15 +164,67 @@ void MainWindow::on_tableWidgetSearch_cellDoubleClicked(int row, int column)
     {
         QString playlist_name = ui->listWidgetPlaylist->currentItem()->text();
         qDebug() << m_search_tracks[row].trackParameters().toString();
+        auto playlist_row = ui->listWidgetPlaylist->currentRow();
         this->addTrackToPlaylist(playlist_name, m_search_tracks[row].trackParameters());
-        msgbox.setText(QString("Música adicionada em : %1").arg(playlist_name));
-        msgbox.exec();
+        ui->listWidgetPlaylist->setCurrentRow(playlist_row);
+        this->updateTrackTable(playlist_name);
     }
     else
     {
-        msgbox.setText(tr("Escolha uma playlist para adicionar a música"));
+        msgbox.setText("Escolha uma playlist para adicionar a música");
         msgbox.exec();
     }
+}
 
-    //    qDebug() << m_search_tracks[row].trackParameters().toString();
+void MainWindow::on_listWidgetPlaylist_itemClicked(QListWidgetItem *item)
+{
+    this->updateTrackTable(item->text());
+}
+
+void MainWindow::on_listWidgetPlaylist_itemDoubleClicked(QListWidgetItem *item)
+{
+    QString playlist_name = item->text();
+    QMessageBox msg_box(this);
+    msg_box.setText(QString("Remover \"%1\" da playlist?").arg(playlist_name));
+    msg_box.setStandardButtons(QMessageBox::Yes | QMessageBox::No);
+    msg_box.setButtonText(QMessageBox::Yes, "Sim");
+    msg_box.setButtonText(QMessageBox::No, "Não");
+
+    if (msg_box.exec() == QMessageBox::Yes)
+    {
+        m_playerlist_config->removePlaylist(item->text());
+        this->updataPlaylistTable();
+        ui->tableWidgetTracks->clearContents();
+        ui->tableWidgetTracks->setRowCount(0);
+    }
+}
+
+void MainWindow::on_pushButtonNewPlaylist_clicked()
+{
+    bool ok;
+    QString name =
+        QInputDialog::getText(this, tr("Playlist"), tr("Nomde da Playlist:"), QLineEdit::Normal, tr(""), &ok);
+
+    if (ok && !name.isEmpty())
+    {
+        this->addTrackToPlaylist(name);
+    }
+}
+
+void MainWindow::on_tableWidgetTracks_itemDoubleClicked(QTableWidgetItem *item)
+{
+    QString playlist_name = ui->listWidgetPlaylist->currentItem()->text();
+    QString track_name = item->text();
+    QMessageBox msg_box(this);
+    msg_box.setText(QString("Remover \"%1\" de \"%2\"?").arg(track_name).arg(playlist_name));
+    msg_box.setStandardButtons(QMessageBox::Yes | QMessageBox::No);
+    msg_box.setButtonText(QMessageBox::Yes, "Sim");
+    msg_box.setButtonText(QMessageBox::No, "Não");
+
+    if (msg_box.exec() == QMessageBox::Yes)
+    {
+        auto track = m_playlist_tracks[item->row()];
+        m_playerlist_config->removeTrackFromPlaylist(playlist_name, track.id);
+        this->updateTrackTable(playlist_name);
+    }
 }

@@ -4,6 +4,7 @@
 #include <QStringList>
 #include <algorithm>
 #include <fstream>
+#include <functional>
 #include <map>
 
 #include "Track.hpp"
@@ -18,10 +19,11 @@ class PlaylistConfig
     bool updated() const;
     const PlaylistData &data();
     void save(PlaylistData &playlist_data);
-    void save(const QString &playlist_name);
+    void removePlaylist(const QString &playlist_name);
+    void removeTrackFromPlaylist(const QString &playlist_name, const QString &track_id);
 
   private:
-    void save_playlist_data(std::ofstream &file, PlaylistData playlist_data);
+    void savePlaylistData(PlaylistData &playlist_data);
     void update();
 
     void updatePlaylistData(const QStringList &str_csv);
@@ -30,6 +32,7 @@ class PlaylistConfig
     PlaylistData m_playlist_data;
     const std::string m_file_name = ".playlist_config";
     bool m_updated = false;
+    const QString m_sep = "||";
 };
 
 #endif // PLAYLISTCONFIG_HPP

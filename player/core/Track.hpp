@@ -13,7 +13,7 @@ struct TrackParameters
     QString name, id, album, album_id, artist, artist_id;
     int duration = 0; // ms
 
-    QString toString(const QString &sep = ",")
+    QString toString(const QString &sep = "||")
     {
         return QStringList({name, id, album, album_id, artist, artist_id, QString::number(duration)}).join(sep);
     }

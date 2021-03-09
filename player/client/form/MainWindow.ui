@@ -14,7 +14,7 @@
    <string>spotify-playlist-qt</string>
   </property>
   <widget class="QWidget" name="centralwidget">
-   <layout class="QVBoxLayout" name="verticalLayout_6">
+   <layout class="QVBoxLayout" name="verticalLayout_7">
     <item>
      <widget class="QGroupBox" name="groupBoxCurrentSong">
       <property name="title">
@@ -53,9 +53,9 @@
      </widget>
     </item>
     <item>
-     <layout class="QHBoxLayout" name="horizontalLayout_2">
+     <layout class="QHBoxLayout" name="horizontalLayout_3">
       <item>
-       <layout class="QVBoxLayout" name="verticalLayout_4">
+       <layout class="QVBoxLayout" name="verticalLayout_6">
         <item>
          <widget class="QGroupBox" name="groupBoxSearch">
           <property name="title">
@@ -91,9 +91,50 @@
           <property name="title">
            <string>Playslists</string>
           </property>
-          <layout class="QVBoxLayout" name="verticalLayout_2">
+          <layout class="QVBoxLayout" name="verticalLayout_4">
            <item>
-            <widget class="QListWidget" name="listWidgetPlaylist"/>
+            <layout class="QVBoxLayout" name="verticalLayout_2">
+             <item>
+              <layout class="QHBoxLayout" name="horizontalLayout_2">
+               <item>
+                <spacer name="horizontalSpacer">
+                 <property name="orientation">
+                  <enum>Qt::Horizontal</enum>
+                 </property>
+                 <property name="sizeHint" stdset="0">
+                  <size>
+                   <width>40</width>
+                   <height>20</height>
+                  </size>
+                 </property>
+                </spacer>
+               </item>
+               <item>
+                <widget class="QPushButton" name="pushButtonNewPlaylist">
+                 <property name="text">
+                  <string>Nova</string>
+                 </property>
+                </widget>
+               </item>
+               <item>
+                <spacer name="horizontalSpacer_2">
+                 <property name="orientation">
+                  <enum>Qt::Horizontal</enum>
+                 </property>
+                 <property name="sizeHint" stdset="0">
+                  <size>
+                   <width>40</width>
+                   <height>20</height>
+                  </size>
+                 </property>
+                </spacer>
+               </item>
+              </layout>
+             </item>
+             <item>
+              <widget class="QListWidget" name="listWidgetPlaylist"/>
+             </item>
+            </layout>
            </item>
           </layout>
          </widget>
@@ -143,7 +184,7 @@
      <x>0</x>
      <y>0</y>
      <width>1195</width>
-     <height>24</height>
+     <height>22</height>
     </rect>
    </property>
    <widget class="QMenu" name="menuMusicas">
@@ -152,8 +193,6 @@
     </property>
     <addaction name="actionUser"/>
     <addaction name="actionConnectAPI"/>
-    <addaction name="actionNewPlaylist"/>
-    <addaction name="actionRemove"/>
    </widget>
    <addaction name="menuMusicas"/>
   </widget>
@@ -163,19 +202,9 @@
     <string>Usuário</string>
    </property>
   </action>
-  <action name="actionNewPlaylist">
-   <property name="text">
-    <string>Nova Playlist</string>
-   </property>
-  </action>
   <action name="actionConnectAPI">
    <property name="text">
     <string>Conectar API</string>
-   </property>
-  </action>
-  <action name="actionRemove">
-   <property name="text">
-    <string>Remover</string>
    </property>
   </action>
  </widget>

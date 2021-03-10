@@ -21,8 +21,11 @@ class Spotify : public QObject
     explicit Spotify(QObject *parent = nullptr);
 
   private slots:
-    void granted();
+    void on_granted();
     void statusChanged(QAbstractOAuth::Status status);
+
+  signals:
+    void granted(bool);
 
   private:
     void updateSpotifyUserConfig();
@@ -40,6 +43,7 @@ class Spotify : public QObject
     //    QJsonObject search_album(const QString &criteria);
     QJsonObject searchTrack(const QString &criteria, int limit);
 
+    bool connectToAPI();
     bool isGranted() const;
 
   private:

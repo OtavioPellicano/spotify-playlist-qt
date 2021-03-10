@@ -29,7 +29,7 @@ class MainWindow : public QMainWindow
     ~MainWindow();
 
   public slots:
-    void userConfigChanged(const UserConfig &user_config);
+    void userConfigChanged(const UserData &user_data);
 
   private slots:
     void on_actionUser_triggered();
@@ -48,11 +48,10 @@ class MainWindow : public QMainWindow
 
     void on_tableWidgetTracks_itemDoubleClicked(QTableWidgetItem *item);
 
-  private:
-    void updateConnectPushButton();
-
-    void setupTable(QTableWidget *table);
     void setEnabledAllGroupBox(bool enabled);
+
+  private:
+    void setupTable(QTableWidget *table);
     void updataPlaylistTable();
     void addTrackToPlaylist(const QString &playlist_name, const TrackParameters &track_parameters);
     void addTrackToPlaylist(const QString &playlist_name);
@@ -61,7 +60,6 @@ class MainWindow : public QMainWindow
   private:
     Ui::MainWindow *ui;
     std::unique_ptr<UserDialog> m_user_dialog;
-    std::unique_ptr<UserConfig> m_user_config;
     std::unique_ptr<PlaylistConfig> m_playerlist_config;
     std::unique_ptr<Player> m_player;
     QSet<QString> m_playlist_names;

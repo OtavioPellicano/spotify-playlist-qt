@@ -23,7 +23,7 @@ class UserDialog : public QDialog
     void on_pushButtonOk_clicked();
 
   signals:
-    void userConfigChanged(const UserConfig &user_config);
+    void userConfigChanged(const UserData &user_data);
 
   private:
     void updateGui();

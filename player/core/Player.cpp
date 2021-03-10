@@ -22,6 +22,16 @@ void Player::setTracks(const QJsonObject &json)
     }
 }
 
+void Player::setUserData(const UserData &user_data)
+{
+    m_user_config.setUserData(user_data);
+}
+
+UserConfig Player::userConfig()
+{
+    return m_user_config;
+}
+
 const QVector<Track> &Player::tracksBySearch() const
 {
     return m_search_tracks;

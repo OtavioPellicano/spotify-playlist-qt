@@ -40,7 +40,7 @@ void UserDialog::on_pushButtonOk_clicked()
     {
         m_user_config.saveUserData(client_id, client_secret);
         m_user_config.update();
-        emit this->userConfigChanged(m_user_config);
+        emit this->userConfigChanged(m_user_config.userData());
         this->accept();
     }
 }

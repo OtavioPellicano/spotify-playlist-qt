@@ -3,19 +3,20 @@
 Spotify::Spotify(QObject *parent)
     : QObject(parent)
 {
-
-    this->updateSpotifyUserConfig();
-
     connect(&m_spotify_api, &QOAuth2AuthorizationCodeFlow::authorizeWithBrowser, &QDesktopServices::openUrl);
-    connect(&m_spotify_api, &QOAuth2AuthorizationCodeFlow::granted, this, &Spotify::granted);
-
-    m_spotify_api.grant();
+    connect(&m_spotify_api, &QOAuth2AuthorizationCodeFlow::granted, this, &Spotify::on_granted);
 }
 
-void Spotify::granted()
+void Spotify::on_granted()
 {
-    qDebug() << "granted!";
-    m_is_granted = true;
+    if (m_spotify_api.status() == QAbstractOAuth::Status::Granted)
+    {
+        qDebug() << "inside granted!";
+        m_is_granted = true;
+        emit granted(true);
+        return;
+    }
+    emit granted(false);
 }
 
 void Spotify::statusChanged(QAbstractOAuth::Status status)
@@ -23,17 +24,19 @@ void Spotify::statusChanged(QAbstractOAuth::Status status)
     switch (status)
     {
     case QAbstractOAuth::Status::Granted:
-        this->granted();
+        this->on_granted();
         break;
     case QAbstractOAuth::Status::NotAuthenticated:
         qDebug() << "NotAuthenticated!";
         m_is_granted = false;
+        emit granted(false);
         break;
     case QAbstractOAuth::Status::RefreshingToken:
         qDebug() << "RefreshingToken!";
         // Token update
         m_spotify_api.post(QUrl(m_user_config.userData().access_token_url));
         m_is_granted = true;
+        emit granted(true);
         break;
     default:
         break;
@@ -117,6 +120,13 @@ QJsonObject Spotify::requestGet(const QString &parameters)
 QJsonObject Spotify::searchTrack(const QString &criteria, int limit)
 {
     return this->search(criteria, SearchType::track, limit);
+}
+
+bool Spotify::connectToAPI()
+{
+    this->updateSpotifyUserConfig();
+    m_spotify_api.grant();
+    return isGranted();
 }
 
 bool Spotify::isGranted() const

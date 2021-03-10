@@ -7,15 +7,15 @@ MainWindow::MainWindow(QWidget *parent)
 {
     ui->setupUi(this);
 
-    m_user_config = std::make_unique<UserConfig>();
     m_playerlist_config = std::make_unique<PlaylistConfig>();
+    m_player = std::make_unique<Player>();
     this->updataPlaylistTable();
-
-    this->updateConnectPushButton();
 
     this->setupTable(ui->tableWidgetSearch);
     this->setupTable(ui->tableWidgetTracks);
     this->setEnabledAllGroupBox(false);
+
+    connect(m_player.get(), &Player::granted, this, &MainWindow::setEnabledAllGroupBox);
 }
 
 MainWindow::~MainWindow()
@@ -23,10 +23,9 @@ MainWindow::~MainWindow()
     delete ui;
 }
 
-void MainWindow::userConfigChanged(const UserConfig &user_config)
+void MainWindow::userConfigChanged(const UserData &user_data)
 {
-    m_user_config = std::make_unique<UserConfig>(user_config);
-    this->updateConnectPushButton();
+    m_player->userConfig().setUserData(user_data);
 }
 
 void MainWindow::on_actionUser_triggered()
@@ -34,11 +33,6 @@ void MainWindow::on_actionUser_triggered()
     m_user_dialog = std::make_unique<UserDialog>(this);
     connect(m_user_dialog.get(), &UserDialog::userConfigChanged, this, &MainWindow::userConfigChanged);
     m_user_dialog->exec();
-}
-
-void MainWindow::updateConnectPushButton()
-{
-    ui->actionConnectAPI->setEnabled(m_user_config->updated());
 }
 
 void MainWindow::setupTable(QTableWidget *table)
@@ -116,25 +110,7 @@ void MainWindow::updateTrackTable(const QString &playlist_name)
 
 void MainWindow::on_actionConnectAPI_triggered()
 {
-    if (m_player == nullptr)
-    {
-        m_player = std::make_unique<Player>(this);
-        this->setEnabledAllGroupBox(true);
-    }
-    else
-    {
-        if (m_player->isGranted())
-        {
-            auto msg_box = QMessageBox(this);
-            msg_box.setText("Você já está conectado!");
-            msg_box.exec();
-        }
-        else
-        {
-            m_player = nullptr;
-            this->setEnabledAllGroupBox(false);
-        }
-    }
+    m_player->connectToAPI();
 }
 
 void MainWindow::on_lineEditSearch_returnPressed()

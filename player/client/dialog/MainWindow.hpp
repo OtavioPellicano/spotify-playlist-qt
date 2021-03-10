@@ -60,7 +60,6 @@ class MainWindow : public QMainWindow
   private:
     Ui::MainWindow *ui;
     std::unique_ptr<UserDialog> m_user_dialog;
-    std::unique_ptr<PlaylistConfig> m_playerlist_config;
     std::unique_ptr<Player> m_player;
     QSet<QString> m_playlist_names;
     QVector<TrackParameters> m_playlist_tracks;

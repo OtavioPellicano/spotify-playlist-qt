@@ -22,6 +22,11 @@ void Player::setTracks(const QJsonObject &json)
     }
 }
 
+PlaylistConfig Player::playlistConfig() const
+{
+    return m_playlist_config;
+}
+
 void Player::setUserData(const UserData &user_data)
 {
     m_user_config.setUserData(user_data);

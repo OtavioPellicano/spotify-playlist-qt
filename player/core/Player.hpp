@@ -3,6 +3,7 @@
 
 #include <memory>
 
+#include "PlaylistConfig.hpp"
 #include "Spotify.hpp"
 #include "Track.hpp"
 #include "UserConfig.hpp"
@@ -19,12 +20,15 @@ class Player : public Spotify
 
     void setUserData(const UserData &user_data);
 
+    PlaylistConfig playlistConfig() const;
+
   private:
     void setTracks(const QJsonObject &json);
 
   private:
     QVector<Track> m_search_tracks;
     UserConfig m_user_config;
+    PlaylistConfig m_playlist_config;
 };
 
 #endif // PLAYER_HPP

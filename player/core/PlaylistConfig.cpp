@@ -23,22 +23,13 @@ void PlaylistConfig::savePlaylistData(PlaylistData &playlist_data)
                 QStringList{it_play->first.first, it_play->first.second, it_play->second.toString(m_sep)}.join(m_sep);
             file << res.toStdString() << std::endl;
         }
-        m_updated = false;
         file.close();
     }
 }
 
-bool PlaylistConfig::updated() const
-{
-    return m_updated;
-}
-
 const PlaylistData &PlaylistConfig::data()
 {
-    if (!m_updated)
-    {
-        this->update();
-    }
+    this->update();
 
     return m_playlist_data;
 }
@@ -55,7 +46,6 @@ void PlaylistConfig::update()
         }
 
         file.close();
-        m_updated = true;
     }
 }
 

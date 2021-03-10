@@ -7,8 +7,8 @@ MainWindow::MainWindow(QWidget *parent)
 {
     ui->setupUi(this);
 
-    m_playerlist_config = std::make_unique<PlaylistConfig>();
-    m_player = std::make_unique<Player>();
+    m_player = std::make_unique<Player>(this);
+    m_user_dialog = std::make_unique<UserDialog>(this);
     this->updataPlaylistTable();
 
     this->setupTable(ui->tableWidgetSearch);
@@ -16,6 +16,7 @@ MainWindow::MainWindow(QWidget *parent)
     this->setEnabledAllGroupBox(false);
 
     connect(m_player.get(), &Player::granted, this, &MainWindow::setEnabledAllGroupBox);
+    connect(m_user_dialog.get(), &UserDialog::userConfigChanged, this, &MainWindow::userConfigChanged);
 }
 
 MainWindow::~MainWindow()
@@ -30,8 +31,6 @@ void MainWindow::userConfigChanged(const UserData &user_data)
 
 void MainWindow::on_actionUser_triggered()
 {
-    m_user_dialog = std::make_unique<UserDialog>(this);
-    connect(m_user_dialog.get(), &UserDialog::userConfigChanged, this, &MainWindow::userConfigChanged);
     m_user_dialog->exec();
 }
 
@@ -54,7 +53,7 @@ void MainWindow::setEnabledAllGroupBox(bool enabled)
 
 void MainWindow::updataPlaylistTable()
 {
-    auto data = m_playerlist_config->data();
+    auto data = m_player->playlistConfig().data();
 
     m_playlist_names.clear();
     for (auto &playlist_name : data)
@@ -69,7 +68,7 @@ void MainWindow::addTrackToPlaylist(const QString &playlist_name, const TrackPar
 {
     PlaylistData playlist_data;
     playlist_data[{playlist_name, track_parameters.id}] = track_parameters;
-    m_playerlist_config->save(playlist_data);
+    m_player->playlistConfig().save(playlist_data);
     this->updataPlaylistTable();
 }
 
@@ -80,7 +79,7 @@ void MainWindow::addTrackToPlaylist(const QString &playlist_name)
 
 void MainWindow::updateTrackTable(const QString &playlist_name)
 {
-    auto data = m_playerlist_config->data();
+    auto data = m_player->playlistConfig().data();
     QVector<QStringList> tracks;
     m_playlist_tracks.clear();
     for (auto &item : data)
@@ -176,7 +175,7 @@ void MainWindow::on_listWidgetPlaylist_itemDoubleClicked(QListWidgetItem *item)
 
     if (msg_box.exec() == QMessageBox::Yes)
     {
-        m_playerlist_config->removePlaylist(item->text());
+        m_player->playlistConfig().removePlaylist(item->text());
         this->updataPlaylistTable();
         ui->tableWidgetTracks->clearContents();
         ui->tableWidgetTracks->setRowCount(0);
@@ -208,7 +207,7 @@ void MainWindow::on_tableWidgetTracks_itemDoubleClicked(QTableWidgetItem *item)
     if (msg_box.exec() == QMessageBox::Yes)
     {
         auto track = m_playlist_tracks[item->row()];
-        m_playerlist_config->removeTrackFromPlaylist(playlist_name, track.id);
+        m_player->playlistConfig().removeTrackFromPlaylist(playlist_name, track.id);
         this->updateTrackTable(playlist_name);
     }
 }

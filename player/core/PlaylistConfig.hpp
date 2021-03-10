@@ -16,7 +16,6 @@ class PlaylistConfig
 {
   public:
     PlaylistConfig();
-    bool updated() const;
     const PlaylistData &data();
     void save(PlaylistData &playlist_data);
     void removePlaylist(const QString &playlist_name);
@@ -31,7 +30,6 @@ class PlaylistConfig
   private:
     PlaylistData m_playlist_data;
     const std::string m_file_name = ".playlist_config";
-    bool m_updated = false;
     const QString m_sep = "||";
 };
 

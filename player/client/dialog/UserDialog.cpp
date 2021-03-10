@@ -20,7 +20,7 @@ UserDialog::~UserDialog()
 
 void UserDialog::updateGui()
 {
-    auto user_data = m_user_config.userData();
+    auto user_data = m_user_config.data();
     ui->lineEditClientID->setText(user_data.client_id);
     ui->lineEditClientSecret->setText(user_data.client_secret);
 }
@@ -38,9 +38,8 @@ void UserDialog::on_pushButtonOk_clicked()
     }
     else
     {
-        m_user_config.saveUserData(client_id, client_secret);
-        m_user_config.update();
-        emit this->userConfigChanged(m_user_config.userData());
+        m_user_config.save(client_id, client_secret);
+        emit this->userConfigChanged(m_user_config.data());
         this->accept();
     }
 }

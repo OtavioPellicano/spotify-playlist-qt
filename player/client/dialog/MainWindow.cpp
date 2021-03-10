@@ -113,7 +113,7 @@ void MainWindow::on_tableWidgetSearch_cellDoubleClicked(int row, int /*column*/)
 {
     qDebug() << ui->listWidgetPlaylist->currentRow();
 
-    QMessageBox msgbox;
+    QMessageBox msgbox(this);
     if (ui->listWidgetPlaylist->currentRow() > -1)
     {
         const auto &tracks_by_search = m_player->tracksBySearch();

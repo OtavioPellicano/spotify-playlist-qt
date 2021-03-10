@@ -32,7 +32,7 @@ void Spotify::statusChanged(QAbstractOAuth::Status status)
     case QAbstractOAuth::Status::RefreshingToken:
         qDebug() << "RefreshingToken!";
         // Token update
-        m_spotify_api.post(QUrl(m_user_config.userData().access_token_url));
+        m_spotify_api.post(QUrl(m_user_config.data().access_token_url));
         break;
     default:
         break;
@@ -42,7 +42,7 @@ void Spotify::statusChanged(QAbstractOAuth::Status status)
 void Spotify::updateSpotifyUserConfig()
 {
     m_reply_handler = std::make_unique<QOAuthHttpServerReplyHandler>(8080, this);
-    auto user_data = m_user_config.userData();
+    auto user_data = m_user_config.data();
 
     m_spotify_api.setReplyHandler(m_reply_handler.get());
     m_spotify_api.setAuthorizationUrl(QUrl(user_data.auth_url));
@@ -95,7 +95,7 @@ QJsonObject Spotify::search(const QString &criteria, SearchType search_type, int
 QJsonObject Spotify::request(RequestType request_type, const QString &parameters, const QJsonDocument &body)
 {
 
-    auto url = QUrl(m_user_config.userData().base_url + "/" + parameters);
+    auto url = QUrl(m_user_config.data().base_url + "/" + parameters);
 
     auto reply = request_type == RequestType::get ? m_spotify_api.get(url) : m_spotify_api.put(url, body.toJson());
 

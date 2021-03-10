@@ -13,7 +13,6 @@
 
 #include "UserDialog.hpp"
 #include "core/Player.hpp"
-#include "core/PlaylistConfig.hpp"
 
 namespace Ui
 {

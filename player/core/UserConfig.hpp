@@ -22,7 +22,7 @@ struct UserData
 
 /**
  * @brief The UserConfig class
- * This class manager UserData for get the current user data (save .config file)
+ * This class manager UserData geting the current user data (saved in .user_config file)
  * or set new Client ID and Client Secret
  */
 class UserConfig
@@ -31,31 +31,35 @@ class UserConfig
     UserConfig();
 
     /**
-     * @brief user_data
+     * @brief data
      * This method will return the UserData updated
-     * @see UserConfig::read_user_data
      * @return
-     * UserData as const UserData&
+     * data as const UserData&
      */
-    const UserData &userData();
+    const UserData &data();
 
     /**
-     * @brief save_user_data
+     * @brief save
      * This method update the .config file with the values of client_id and client_secret
      * If there is no .config file, a new one is created
      * @param client_id
      * @param client_secret
      */
-    void saveUserData(const QString &client_id, const QString &client_secret);
+    void save(const QString &client_id, const QString &client_secret);
 
+    /**
+     * @brief setUserData
+     * @param user_data
+     */
+    void setUserData(const UserData &user_data);
+
+  private:
     /**
      * @brief update
      * This method read the .config file and update the UserData member data
      * if there is no .config file, no update is made at all. So, client id and secret id will be set to empty
      */
     void update();
-
-    void setUserData(const UserData &user_data);
 
   private:
     UserData m_user_data;

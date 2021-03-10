@@ -8,6 +8,9 @@
 
 class Track;
 
+/**
+ * @brief The TrackParameters struct
+ */
 struct TrackParameters
 {
     QString name, id, album, album_id, artist, artist_id, uri;
@@ -19,6 +22,10 @@ struct TrackParameters
     }
 };
 
+/**
+ * @brief The Track class
+ * This class got a Json item and tranform to TrackParameters
+ */
 class Track
 {
   public:

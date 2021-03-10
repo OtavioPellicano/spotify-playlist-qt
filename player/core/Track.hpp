@@ -10,16 +10,13 @@ class Track;
 
 struct TrackParameters
 {
-    QString name, id, album, album_id, artist, artist_id;
+    QString name, id, album, album_id, artist, artist_id, uri;
     int duration = 0; // ms
 
-  private:
-    // help to debug
-    QString to_string(const QString &sep = ",")
+    QString toString(const QString &sep = "||")
     {
-        return QStringList({name, id, album, album_id, artist, artist_id, QString::number(duration)}).join(sep);
+        return QStringList({name, id, album, album_id, artist, artist_id, QString::number(duration), uri}).join(sep);
     }
-    friend Track;
 };
 
 class Track
@@ -27,7 +24,9 @@ class Track
   public:
     explicit Track(const QJsonObject &item);
 
-    TrackParameters track_parameters() const;
+    Track(const TrackParameters &track_parameters);
+
+    TrackParameters trackParameters() const;
 
   private:
     TrackParameters m_track_parameters;

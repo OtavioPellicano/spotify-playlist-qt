@@ -7,12 +7,15 @@ MainWindow::MainWindow(QWidget *parent)
 {
     ui->setupUi(this);
 
-    m_user_config = std::make_unique<UserConfig>();
-    this->update_connect_push_button();
+    m_player = std::make_unique<Player>(this);
+    m_user_dialog = std::make_unique<UserDialog>(this);
 
-    this->setup_table(ui->tableWidgetSearch);
-    this->setup_table(ui->tableWidgetTracks);
-    this->set_enabled_all_group_box(false);
+    this->setupTable(ui->tableWidgetSearch);
+    this->setupTable(ui->tableWidgetTracks);
+    this->setEnabledAllGroupBox(false);
+
+    connect(m_player.get(), &Player::granted, this, &MainWindow::on_granted);
+    connect(m_user_dialog.get(), &UserDialog::userConfigChanged, this, &MainWindow::userConfigChanged);
 }
 
 MainWindow::~MainWindow()
@@ -20,25 +23,17 @@ MainWindow::~MainWindow()
     delete ui;
 }
 
-void MainWindow::on_user_config_changed(const UserConfig &user_config)
+void MainWindow::userConfigChanged(const UserData &user_data)
 {
-    m_user_config = std::make_unique<UserConfig>(user_config);
-    this->update_connect_push_button();
+    m_player->userConfig().setUserData(user_data);
 }
 
 void MainWindow::on_actionUser_triggered()
 {
-    m_user_dialog = std::make_unique<UserDialog>(this);
-    connect(m_user_dialog.get(), &UserDialog::user_config_changed, this, &MainWindow::on_user_config_changed);
     m_user_dialog->exec();
 }
 
-void MainWindow::update_connect_push_button()
-{
-    ui->actionConnectAPI->setEnabled(m_user_config->updated());
-}
-
-void MainWindow::setup_table(QTableWidget *table)
+void MainWindow::setupTable(QTableWidget *table)
 {
     table->verticalHeader()->setVisible(false);
     table->setSelectionBehavior(QAbstractItemView::SelectRows);
@@ -47,7 +42,7 @@ void MainWindow::setup_table(QTableWidget *table)
     table->setEditTriggers(QAbstractItemView::NoEditTriggers);
 }
 
-void MainWindow::set_enabled_all_group_box(bool enabled)
+void MainWindow::setEnabledAllGroupBox(bool enabled)
 {
     ui->groupBoxPlaylist->setEnabled(enabled);
     ui->groupBoxCurrentSong->setEnabled(enabled);
@@ -55,40 +50,155 @@ void MainWindow::set_enabled_all_group_box(bool enabled)
     ui->groupBoxSongs->setEnabled(enabled);
 }
 
-void MainWindow::on_actionConnectAPI_triggered()
+void MainWindow::updataPlaylistList()
 {
-    if (m_player == nullptr)
-    {
-        m_player = std::make_unique<Player>(this);
-        this->set_enabled_all_group_box(true);
-    }
-    else
-    {
-        if (m_player->is_granted())
-        {
-            auto msg_box = QMessageBox(this);
-            msg_box.setText("Você já está conectado!");
-            msg_box.exec();
-        }
-        else
-        {
-            m_player = nullptr;
-            this->set_enabled_all_group_box(false);
-        }
-    }
+    ui->listWidgetPlaylist->clear();
+    ui->listWidgetPlaylist->addItems(m_player->playlistNames());
 }
 
-void MainWindow::on_lineEditSearch_returnPressed()
+void MainWindow::addTrackToPlaylist(const QString &playlist_name, const TrackParameters &track_parameters)
 {
-    auto tracks = m_player->search_track(ui->lineEditSearch->text());
+    PlaylistData playlist_data;
+    playlist_data[{playlist_name, track_parameters.id}] = track_parameters;
+    m_player->playlistConfig().save(playlist_data);
+    this->updataPlaylistList();
+}
 
-    ui->tableWidgetSearch->clearContents();
-    ui->tableWidgetSearch->setRowCount(tracks.size());
+void MainWindow::addTrackToPlaylist(const QString &playlist_name)
+{
+    this->addTrackToPlaylist(playlist_name, TrackParameters());
+}
+
+void MainWindow::updateTrackTable(const QString &playlist_name)
+{
+    auto tracks = this->m_player->updatePlaylistTracks(playlist_name);
+
+    this->updateTable(ui->tableWidgetTracks, tracks);
+}
+
+void MainWindow::updateTable(QTableWidget *table, const QVector<Track> &tracks)
+{
+    table->clearContents();
+    table->setRowCount(tracks.size());
 
     std::size_t row = 0;
     for (auto it_track = tracks.begin(); it_track != tracks.end(); ++it_track, ++row)
     {
-        ui->tableWidgetSearch->setItem(row, 0, new QTableWidgetItem(it_track->track_parameters().name));
-        ui->tableWidgetSearch->setItem(row, 1, new QTableWidgetItem(it_track->track_parameters().artist));
+        table->setItem(row, 0, new QTableWidgetItem(it_track->trackParameters().name));
+        table->setItem(row, 1, new QTableWidgetItem(it_track->trackParameters().artist));
+        table->setItem(row, 2, new QTableWidgetItem(it_track->trackParameters().album));
+        table->setItem(
+            row, 3,
+            new QTableWidgetItem(
+                QDateTime::fromTime_t(it_track->trackParameters().duration / 1000).toUTC().toString("mm:ss")));
+    }
+}
+
+void MainWindow::on_actionConnectAPI_triggered()
+{
+    m_player->connectToAPI();
+}
+
+void MainWindow::on_lineEditSearch_returnPressed()
+{
+    ui->lineEditSearch->setEnabled(false);
+    m_player->searchTrack(ui->lineEditSearch->text());
+
+    this->updateTable(ui->tableWidgetSearch, m_player->tracksBySearch());
+
+    ui->lineEditSearch->setEnabled(true);
+}
+
+void MainWindow::on_tableWidgetSearch_cellDoubleClicked(int row, int /*column*/)
+{
+    qDebug() << ui->listWidgetPlaylist->currentRow();
+
+    QMessageBox msgbox;
+    if (ui->listWidgetPlaylist->currentRow() > -1)
+    {
+        const auto &tracks_by_search = m_player->tracksBySearch();
+        QString playlist_name = ui->listWidgetPlaylist->currentItem()->text();
+        qDebug() << tracks_by_search[row].trackParameters().toString();
+        auto playlist_row = ui->listWidgetPlaylist->currentRow();
+        this->addTrackToPlaylist(playlist_name, tracks_by_search[row].trackParameters());
+        ui->listWidgetPlaylist->setCurrentRow(playlist_row);
+        this->updateTrackTable(playlist_name);
+    }
+    else
+    {
+        msgbox.setText("Escolha uma playlist para adicionar a música");
+        msgbox.exec();
+    }
+}
+
+void MainWindow::on_listWidgetPlaylist_itemClicked(QListWidgetItem *item)
+{
+    this->updateTrackTable(item->text());
+}
+
+void MainWindow::on_listWidgetPlaylist_itemDoubleClicked(QListWidgetItem *item)
+{
+    QString playlist_name = item->text();
+    QMessageBox msg_box(this);
+    msg_box.setText(QString("Remover \"%1\" da playlist?").arg(playlist_name));
+    msg_box.setStandardButtons(QMessageBox::Yes | QMessageBox::No);
+    msg_box.setButtonText(QMessageBox::Yes, "Sim");
+    msg_box.setButtonText(QMessageBox::No, "Não");
+
+    if (msg_box.exec() == QMessageBox::Yes)
+    {
+        m_player->playlistConfig().removePlaylist(item->text());
+        this->updataPlaylistList();
+        ui->tableWidgetTracks->clearContents();
+        ui->tableWidgetTracks->setRowCount(0);
+    }
+}
+
+void MainWindow::on_pushButtonNewPlaylist_clicked()
+{
+    bool ok;
+    QString name =
+        QInputDialog::getText(this, tr("Playlist"), tr("Nomde da Playlist:"), QLineEdit::Normal, tr(""), &ok);
+
+    if (ok && !name.isEmpty())
+    {
+        this->addTrackToPlaylist(name);
+    }
+}
+
+void MainWindow::on_tableWidgetTracks_itemDoubleClicked(QTableWidgetItem *item)
+{
+    QString playlist_name = ui->listWidgetPlaylist->currentItem()->text();
+    QString track_name = item->text();
+    QMessageBox msg_box(this);
+    msg_box.setText(QString("Remover \"%1\" de \"%2\"?").arg(track_name).arg(playlist_name));
+    msg_box.setStandardButtons(QMessageBox::Yes | QMessageBox::No);
+    msg_box.setButtonText(QMessageBox::Yes, "Sim");
+    msg_box.setButtonText(QMessageBox::No, "Não");
+
+    if (msg_box.exec() == QMessageBox::Yes)
+    {
+        auto track = m_player->playlistTracks()[item->row()];
+        m_player->playlistConfig().removeTrackFromPlaylist(playlist_name, track.trackParameters().id);
+        this->updateTrackTable(playlist_name);
+    }
+}
+
+void MainWindow::on_granted()
+{
+    this->setEnabledAllGroupBox(true);
+    this->updataPlaylistList();
+}
+
+void MainWindow::on_pushButtonPlay_clicked()
+{
+    if (ui->tableWidgetTracks->rowCount())
+    {
+        auto track_row = ui->tableWidgetTracks->currentRow() > -1 ? ui->tableWidgetTracks->currentRow() : 0;
+
+        auto current_track = m_player->playlistTracks()[track_row];
+        m_player->playTrack(current_track);
+
+        ui->tableWidgetTracks->setCurrentCell(track_row, 0);
     }
 }

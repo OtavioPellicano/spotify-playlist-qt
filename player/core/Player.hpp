@@ -3,19 +3,43 @@
 
 #include <memory>
 
+#include "PlaylistConfig.hpp"
 #include "Spotify.hpp"
 #include "Track.hpp"
+#include "UserConfig.hpp"
 
 class Player : public Spotify
 {
   public:
     explicit Player(QObject *parent = nullptr);
-    QVector<Track> search_track(const QString &criteria, int limit = 10);
+    QVector<Track> searchTrack(const QString &criteria, int limit = 10);
+
+    const QVector<Track> &tracksBySearch() const;
+
+    UserConfig userConfig();
+
+    void setUserData(const UserData &user_data);
+
+    PlaylistConfig playlistConfig() const;
+
+    QStringList playlistNames();
+
+    const QVector<Track> &playlistTracks() const;
+
+    QVector<Track> updatePlaylistTracks(const QString playlist_name);
+
+    using Spotify::playTrack;
+    void playTrack(const Track &track);
 
   private:
-    void set_tracks(const QJsonObject &json);
+    void setTracks(const QJsonObject &json);
 
-    QVector<Track> m_tracks;
+  private:
+    QVector<Track> m_search_tracks;
+    UserConfig m_user_config;
+    PlaylistConfig m_playlist_config;
+    QStringList m_playlist_names;
+    QVector<Track> m_playlist_tracks;
 };
 
 #endif // PLAYER_HPP

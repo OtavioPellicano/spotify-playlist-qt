@@ -1,14 +1,19 @@
 #ifndef MAINWINDOW_H
 #define MAINWINDOW_H
 
+#include <QDateTime>
 #include <QDebug>
+#include <QInputDialog>
+#include <QListWidgetItem>
 #include <QMainWindow>
 #include <QMessageBox>
+#include <QSet>
 #include <QTableWidget>
 #include <memory>
 
 #include "UserDialog.hpp"
 #include "core/Player.hpp"
+#include "core/PlaylistConfig.hpp"
 
 namespace Ui
 {
@@ -24,7 +29,7 @@ class MainWindow : public QMainWindow
     ~MainWindow();
 
   public slots:
-    void on_user_config_changed(const UserConfig &user_config);
+    void userConfigChanged(const UserData &user_data);
 
   private slots:
     void on_actionUser_triggered();
@@ -33,16 +38,32 @@ class MainWindow : public QMainWindow
 
     void on_lineEditSearch_returnPressed();
 
-  private:
-    void update_connect_push_button();
+    void on_tableWidgetSearch_cellDoubleClicked(int row, int column);
 
-    void setup_table(QTableWidget *table);
-    void set_enabled_all_group_box(bool enabled);
+    void on_listWidgetPlaylist_itemClicked(QListWidgetItem *item);
+
+    void on_listWidgetPlaylist_itemDoubleClicked(QListWidgetItem *item);
+
+    void on_pushButtonNewPlaylist_clicked();
+
+    void on_tableWidgetTracks_itemDoubleClicked(QTableWidgetItem *item);
+
+    void on_granted();
+
+    void on_pushButtonPlay_clicked();
+
+  private:
+    void setEnabledAllGroupBox(bool enabled);
+    void setupTable(QTableWidget *table);
+    void updataPlaylistList();
+    void addTrackToPlaylist(const QString &playlist_name, const TrackParameters &track_parameters);
+    void addTrackToPlaylist(const QString &playlist_name);
+    void updateTrackTable(const QString &playlist_name);
+    void updateTable(QTableWidget *table, const QVector<Track> &tracks);
 
   private:
     Ui::MainWindow *ui;
     std::unique_ptr<UserDialog> m_user_dialog;
-    std::unique_ptr<UserConfig> m_user_config;
     std::unique_ptr<Player> m_player;
 };
 

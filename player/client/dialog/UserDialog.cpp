@@ -10,7 +10,7 @@ UserDialog::UserDialog(QWidget *parent)
     ui->lineEditClientID->setPlaceholderText("Client ID");
     ui->lineEditClientSecret->setPlaceholderText("Client Secret");
 
-    this->update_gui();
+    this->updateGui();
 }
 
 UserDialog::~UserDialog()
@@ -18,9 +18,9 @@ UserDialog::~UserDialog()
     delete ui;
 }
 
-void UserDialog::update_gui()
+void UserDialog::updateGui()
 {
-    auto user_data = m_user_config.user_data();
+    auto user_data = m_user_config.userData();
     ui->lineEditClientID->setText(user_data.client_id);
     ui->lineEditClientSecret->setText(user_data.client_secret);
 }
@@ -38,9 +38,9 @@ void UserDialog::on_pushButtonOk_clicked()
     }
     else
     {
-        m_user_config.save_user_data(client_id, client_secret);
+        m_user_config.saveUserData(client_id, client_secret);
         m_user_config.update();
-        emit this->user_config_changed(m_user_config);
+        emit this->userConfigChanged(m_user_config.userData());
         this->accept();
     }
 }

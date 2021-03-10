@@ -3,19 +3,19 @@
 Spotify::Spotify(QObject *parent)
     : QObject(parent)
 {
-
-    this->update_spotify_user_config();
-
     connect(&m_spotify_api, &QOAuth2AuthorizationCodeFlow::authorizeWithBrowser, &QDesktopServices::openUrl);
-    connect(&m_spotify_api, &QOAuth2AuthorizationCodeFlow::granted, this, &Spotify::granted);
-
-    m_spotify_api.grant();
+    connect(&m_spotify_api, &QOAuth2AuthorizationCodeFlow::granted, this, &Spotify::on_granted);
 }
 
-void Spotify::granted()
+void Spotify::on_granted()
 {
-    qDebug() << "granted!";
-    m_is_granted = true;
+    if (m_spotify_api.status() == QAbstractOAuth::Status::Granted)
+    {
+        qDebug() << "granted!";
+        emit granted(true);
+        return;
+    }
+    emit granted(false);
 }
 
 void Spotify::statusChanged(QAbstractOAuth::Status status)
@@ -23,27 +23,26 @@ void Spotify::statusChanged(QAbstractOAuth::Status status)
     switch (status)
     {
     case QAbstractOAuth::Status::Granted:
-        this->granted();
+        this->on_granted();
         break;
     case QAbstractOAuth::Status::NotAuthenticated:
         qDebug() << "NotAuthenticated!";
-        m_is_granted = false;
+        emit granted(false);
         break;
     case QAbstractOAuth::Status::RefreshingToken:
         qDebug() << "RefreshingToken!";
         // Token update
-        m_spotify_api.post(QUrl(m_user_config.user_data().access_token_url));
-        m_is_granted = true;
+        m_spotify_api.post(QUrl(m_user_config.userData().access_token_url));
         break;
     default:
         break;
     }
 }
 
-void Spotify::update_spotify_user_config()
+void Spotify::updateSpotifyUserConfig()
 {
     m_reply_handler = std::make_unique<QOAuthHttpServerReplyHandler>(8080, this);
-    auto user_data = m_user_config.user_data();
+    auto user_data = m_user_config.userData();
 
     m_spotify_api.setReplyHandler(m_reply_handler.get());
     m_spotify_api.setAuthorizationUrl(QUrl(user_data.auth_url));
@@ -88,13 +87,17 @@ QJsonObject Spotify::search(const QString &criteria, SearchType search_type, int
         break;
     }
 
-    return this->request_get(
+    return this->request(
+        RequestType::get,
         "search?q=" + criteria + "&type=" + q_type + "&limit=" + QString::number(limit) + "&market=from_token");
 }
 
-QJsonObject Spotify::request_get(const QString &parameters)
+QJsonObject Spotify::request(RequestType request_type, const QString &parameters, const QJsonDocument &body)
 {
-    auto reply = m_spotify_api.get(QUrl(m_user_config.user_data().base_url + "/" + parameters));
+
+    auto url = QUrl(m_user_config.userData().base_url + "/" + parameters);
+
+    auto reply = request_type == RequestType::get ? m_spotify_api.get(url) : m_spotify_api.put(url, body.toJson());
 
     while (!reply->isFinished())
     {
@@ -103,7 +106,7 @@ QJsonObject Spotify::request_get(const QString &parameters)
 
     if (reply->error() != QNetworkReply::NoError)
     {
-        qDebug() << reply->errorString();
+        qDebug() << reply->errorString() << ": " << reply->error();
         return QJsonObject();
     }
     else
@@ -114,12 +117,22 @@ QJsonObject Spotify::request_get(const QString &parameters)
     }
 }
 
-QJsonObject Spotify::search_track(const QString &criteria, int limit)
+QJsonObject Spotify::searchTrack(const QString &criteria, int limit)
 {
     return this->search(criteria, SearchType::track, limit);
 }
 
-bool Spotify::is_granted() const
+void Spotify::playTrack(const QString &uri)
 {
-    return m_is_granted;
+    QJsonDocument body({
+        QPair<QString, QJsonArray>("context_uri", {QJsonArray::fromStringList(QStringList(uri))}),
+    });
+
+    this->request(RequestType::put, "me/player/play", body);
+}
+
+void Spotify::connectToAPI()
+{
+    this->updateSpotifyUserConfig();
+    m_spotify_api.grant();
 }

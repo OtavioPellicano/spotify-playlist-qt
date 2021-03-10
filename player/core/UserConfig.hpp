@@ -13,11 +13,11 @@ struct UserData
 {
     QString client_id = "";
     QString client_secret = "";
-    const QString access_token_url = "https://accounts.spotify.com/api/token";
-    const QString auth_url = "https://accounts.spotify.com/authorize";
-    const QString api_url = "https://api.spotify.com";
-    const QString api_version = "v1";
-    const QString base_url = api_url + "/" + api_version;
+    QString access_token_url = "https://accounts.spotify.com/api/token";
+    QString auth_url = "https://accounts.spotify.com/authorize";
+    QString api_url = "https://api.spotify.com";
+    QString api_version = "v1";
+    QString base_url = api_url + "/" + api_version;
 };
 
 /**
@@ -37,7 +37,7 @@ class UserConfig
      * @return
      * UserData as const UserData&
      */
-    const UserData &user_data();
+    const UserData &userData();
 
     /**
      * @brief save_user_data
@@ -46,9 +46,7 @@ class UserConfig
      * @param client_id
      * @param client_secret
      */
-    void save_user_data(const QString &client_id, const QString &client_secret);
-
-    bool updated() const;
+    void saveUserData(const QString &client_id, const QString &client_secret);
 
     /**
      * @brief update
@@ -57,10 +55,11 @@ class UserConfig
      */
     void update();
 
+    void setUserData(const UserData &user_data);
+
   private:
     UserData m_user_data;
     const std::string m_file_name = ".user_config";
-    bool m_updated = false;
 };
 
 #endif // USERCONFIG_HPP

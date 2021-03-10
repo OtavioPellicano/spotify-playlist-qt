@@ -5,13 +5,9 @@ UserConfig::UserConfig()
     this->update();
 }
 
-const UserData &UserConfig::user_data()
+const UserData &UserConfig::userData()
 {
-    if (!m_updated)
-    {
-        this->update();
-    }
-
+    this->update();
     return m_user_data;
 }
 
@@ -26,21 +22,21 @@ void UserConfig::update()
         std::getline(file, str);
         m_user_data.client_secret = QString::fromStdString(str);
         file.close();
-        m_updated = true;
     }
 }
 
-bool UserConfig::updated() const
+void UserConfig::setUserData(const UserData &user_data)
 {
-    return m_updated;
+    m_user_data = user_data;
+    this->saveUserData(user_data.client_id, user_data.client_secret);
+    //    this->update();
 }
 
-void UserConfig::save_user_data(const QString &client_id, const QString &client_secret)
+void UserConfig::saveUserData(const QString &client_id, const QString &client_secret)
 {
     // TODO: use QFile
     auto file = std::ofstream(m_file_name);
     file << client_id.toStdString() << std::endl;
     file << client_secret.toStdString() << std::endl;
     file.close();
-    m_updated = false;
 }

@@ -24,6 +24,8 @@ class Track
   public:
     explicit Track(const QJsonObject &item);
 
+    Track(const TrackParameters &track_parameters);
+
     TrackParameters trackParameters() const;
 
   private:

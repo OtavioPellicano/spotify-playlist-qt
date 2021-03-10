@@ -22,6 +22,29 @@ void Player::setTracks(const QJsonObject &json)
     }
 }
 
+const QVector<Track> &Player::playlistTracks() const
+{
+    return m_playlist_tracks;
+}
+
+QVector<Track> Player::updatePlaylistTracks(const QString playlist_name)
+{
+    auto data = this->playlistConfig().data();
+    QVector<Track> tracks;
+    m_playlist_tracks.clear();
+    for (auto &item : data)
+    {
+        if (!item.first.second.isEmpty() && item.first.first == playlist_name)
+        {
+            auto &param = item.second;
+            m_playlist_tracks.append(param);
+            tracks.append(item.second);
+        }
+    }
+
+    return tracks;
+}
+
 QStringList Player::playlistNames()
 {
     QSet<QString> playlist_names;

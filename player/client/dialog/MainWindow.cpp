@@ -9,7 +9,7 @@ MainWindow::MainWindow(QWidget *parent)
 
     m_player = std::make_unique<Player>(this);
     m_user_dialog = std::make_unique<UserDialog>(this);
-    this->updataPlaylistTable();
+    this->updataPlaylistList();
 
     this->setupTable(ui->tableWidgetSearch);
     this->setupTable(ui->tableWidgetTracks);
@@ -51,7 +51,7 @@ void MainWindow::setEnabledAllGroupBox(bool enabled)
     ui->groupBoxSongs->setEnabled(enabled);
 }
 
-void MainWindow::updataPlaylistTable()
+void MainWindow::updataPlaylistList()
 {
     ui->listWidgetPlaylist->clear();
     ui->listWidgetPlaylist->addItems(m_player->playlistNames());
@@ -62,7 +62,7 @@ void MainWindow::addTrackToPlaylist(const QString &playlist_name, const TrackPar
     PlaylistData playlist_data;
     playlist_data[{playlist_name, track_parameters.id}] = track_parameters;
     m_player->playlistConfig().save(playlist_data);
-    this->updataPlaylistTable();
+    this->updataPlaylistList();
 }
 
 void MainWindow::addTrackToPlaylist(const QString &playlist_name)
@@ -72,31 +72,26 @@ void MainWindow::addTrackToPlaylist(const QString &playlist_name)
 
 void MainWindow::updateTrackTable(const QString &playlist_name)
 {
-    auto data = m_player->playlistConfig().data();
-    QVector<QStringList> tracks;
-    m_playlist_tracks.clear();
-    for (auto &item : data)
-    {
-        if (!item.first.second.isEmpty() && item.first.first == playlist_name)
-        {
-            auto &param = item.second;
-            m_playlist_tracks.append(param);
-            tracks.append(QStringList(
-                {param.name, param.artist, param.album,
-                 QDateTime::fromTime_t(param.duration / 1000).toUTC().toString("mm:ss")}));
-        }
-    }
+    auto tracks = this->m_player->updatePlaylistTracks(playlist_name);
 
-    ui->tableWidgetTracks->clearContents();
-    ui->tableWidgetTracks->setRowCount(tracks.size());
+    this->updateTable(ui->tableWidgetTracks, tracks);
+}
 
-    for (int i = 0; i < tracks.size(); ++i)
+void MainWindow::updateTable(QTableWidget *table, const QVector<Track> &tracks)
+{
+    table->clearContents();
+    table->setRowCount(tracks.size());
+
+    std::size_t row = 0;
+    for (auto it_track = tracks.begin(); it_track != tracks.end(); ++it_track, ++row)
     {
-        auto item = tracks[i];
-        ui->tableWidgetTracks->setItem(i, 0, new QTableWidgetItem(item[0]));
-        ui->tableWidgetTracks->setItem(i, 1, new QTableWidgetItem(item[1]));
-        ui->tableWidgetTracks->setItem(i, 2, new QTableWidgetItem(item[2]));
-        ui->tableWidgetTracks->setItem(i, 3, new QTableWidgetItem(item[3]));
+        table->setItem(row, 0, new QTableWidgetItem(it_track->trackParameters().name));
+        table->setItem(row, 1, new QTableWidgetItem(it_track->trackParameters().artist));
+        table->setItem(row, 2, new QTableWidgetItem(it_track->trackParameters().album));
+        table->setItem(
+            row, 3,
+            new QTableWidgetItem(
+                QDateTime::fromTime_t(it_track->trackParameters().duration / 1000).toUTC().toString("mm:ss")));
     }
 }
 
@@ -110,22 +105,7 @@ void MainWindow::on_lineEditSearch_returnPressed()
     ui->lineEditSearch->setEnabled(false);
     m_player->searchTrack(ui->lineEditSearch->text());
 
-    const auto &tracks_by_search = m_player->tracksBySearch();
-
-    ui->tableWidgetSearch->clearContents();
-    ui->tableWidgetSearch->setRowCount(tracks_by_search.size());
-
-    std::size_t row = 0;
-    for (auto it_track = tracks_by_search.begin(); it_track != tracks_by_search.end(); ++it_track, ++row)
-    {
-        ui->tableWidgetSearch->setItem(row, 0, new QTableWidgetItem(it_track->trackParameters().name));
-        ui->tableWidgetSearch->setItem(row, 1, new QTableWidgetItem(it_track->trackParameters().artist));
-        ui->tableWidgetSearch->setItem(row, 2, new QTableWidgetItem(it_track->trackParameters().album));
-        ui->tableWidgetSearch->setItem(
-            row, 3,
-            new QTableWidgetItem(
-                QDateTime::fromTime_t(it_track->trackParameters().duration / 1000).toUTC().toString("mm:ss")));
-    }
+    this->updateTable(ui->tableWidgetSearch, m_player->tracksBySearch());
 
     ui->lineEditSearch->setEnabled(true);
 }
@@ -169,7 +149,7 @@ void MainWindow::on_listWidgetPlaylist_itemDoubleClicked(QListWidgetItem *item)
     if (msg_box.exec() == QMessageBox::Yes)
     {
         m_player->playlistConfig().removePlaylist(item->text());
-        this->updataPlaylistTable();
+        this->updataPlaylistList();
         ui->tableWidgetTracks->clearContents();
         ui->tableWidgetTracks->setRowCount(0);
     }
@@ -199,8 +179,8 @@ void MainWindow::on_tableWidgetTracks_itemDoubleClicked(QTableWidgetItem *item)
 
     if (msg_box.exec() == QMessageBox::Yes)
     {
-        auto track = m_playlist_tracks[item->row()];
-        m_player->playlistConfig().removeTrackFromPlaylist(playlist_name, track.id);
+        auto track = m_player->playlistTracks()[item->row()];
+        m_player->playlistConfig().removeTrackFromPlaylist(playlist_name, track.trackParameters().id);
         this->updateTrackTable(playlist_name);
     }
 }

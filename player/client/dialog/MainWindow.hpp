@@ -52,16 +52,16 @@ class MainWindow : public QMainWindow
 
   private:
     void setupTable(QTableWidget *table);
-    void updataPlaylistTable();
+    void updataPlaylistList();
     void addTrackToPlaylist(const QString &playlist_name, const TrackParameters &track_parameters);
     void addTrackToPlaylist(const QString &playlist_name);
     void updateTrackTable(const QString &playlist_name);
+    void updateTable(QTableWidget *table, const QVector<Track> &tracks);
 
   private:
     Ui::MainWindow *ui;
     std::unique_ptr<UserDialog> m_user_dialog;
     std::unique_ptr<Player> m_player;
-    QVector<TrackParameters> m_playlist_tracks;
 };
 
 #endif // MAINWINDOW_H

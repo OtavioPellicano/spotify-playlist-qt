@@ -19,6 +19,11 @@ Track::Track(const QJsonObject &item)
     qDebug() << m_track_parameters.toString();
 }
 
+Track::Track(const TrackParameters &track_parameters)
+    : m_track_parameters(track_parameters)
+{
+}
+
 TrackParameters Track::trackParameters() const
 {
     return m_track_parameters;

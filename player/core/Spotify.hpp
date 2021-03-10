@@ -43,14 +43,12 @@ class Spotify : public QObject
     //    QJsonObject search_album(const QString &criteria);
     QJsonObject searchTrack(const QString &criteria, int limit);
 
-    bool connectToAPI();
-    bool isGranted() const;
+    void connectToAPI();
 
   private:
     UserConfig m_user_config;
     QOAuth2AuthorizationCodeFlow m_spotify_api;
     std::unique_ptr<QOAuthHttpServerReplyHandler> m_reply_handler;
-    bool m_is_granted = false;
 };
 
 #endif // AUTH_H

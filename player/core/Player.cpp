@@ -5,7 +5,7 @@ Player::Player(QObject *parent)
 {
 }
 
-QVector<Track> Player::searchTrack(const QString &criteria, int limit)
+const QVector<Track> &Player::searchTrack(const QString &criteria, int limit)
 {
     this->setTracks(Spotify::searchTrack(criteria, limit));
 
@@ -51,7 +51,7 @@ void Player::playTrack(const Track &track)
     this->playTrack(track.trackParameters().uri);
 }
 
-QStringList Player::playlistNames()
+const QStringList &Player::playlistNames()
 {
     QSet<QString> playlist_names;
     auto data = this->playlistConfig().data();
@@ -78,7 +78,7 @@ void Player::setUserData(const UserData &user_data)
     m_user_config.setUserData(user_data);
 }
 
-UserConfig Player::userConfig()
+UserConfig &Player::userConfig()
 {
     return m_user_config;
 }

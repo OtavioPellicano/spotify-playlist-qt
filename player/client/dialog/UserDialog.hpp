@@ -11,6 +11,10 @@ namespace Ui
 class UserDialog;
 }
 
+/**
+ * @brief The UserDialog class
+ * Class used just to emit UserConfig to MainWindow
+ */
 class UserDialog : public QDialog
 {
     Q_OBJECT

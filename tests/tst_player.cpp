@@ -27,8 +27,8 @@ TestPlayer::~TestPlayer()
 void TestPlayer::test_user_config()
 {
     UserConfig user_config;
-    user_config.saveUserData("Otavio", "Pellicano");
-    auto user_data = user_config.userData();
+    user_config.save("Otavio", "Pellicano");
+    auto user_data = user_config.data();
 
     QVERIFY(user_data.client_id == "Otavio");
     QVERIFY(user_data.client_secret == "Pellicano");

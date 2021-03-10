@@ -28,6 +28,9 @@ class Player : public Spotify
 
     QVector<Track> updatePlaylistTracks(const QString playlist_name);
 
+    using Spotify::playTrack;
+    void playTrack(const Track &track);
+
   private:
     void setTracks(const QJsonObject &json);
 

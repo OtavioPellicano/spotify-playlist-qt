@@ -23,6 +23,9 @@
       <layout class="QHBoxLayout" name="horizontalLayout">
        <item>
         <widget class="QPushButton" name="pushButtonBack">
+         <property name="enabled">
+          <bool>false</bool>
+         </property>
          <property name="text">
           <string>Back</string>
          </property>
@@ -30,6 +33,9 @@
        </item>
        <item>
         <widget class="QPushButton" name="pushButtonPlay">
+         <property name="enabled">
+          <bool>false</bool>
+         </property>
          <property name="text">
           <string>Play</string>
          </property>
@@ -37,6 +43,9 @@
        </item>
        <item>
         <widget class="QPushButton" name="pushButtonNext">
+         <property name="enabled">
+          <bool>false</bool>
+         </property>
          <property name="text">
           <string>Next</string>
          </property>
@@ -44,6 +53,9 @@
        </item>
        <item>
         <widget class="QSlider" name="horizontalSliderSongProgress">
+         <property name="enabled">
+          <bool>false</bool>
+         </property>
          <property name="orientation">
           <enum>Qt::Horizontal</enum>
          </property>
@@ -194,7 +206,7 @@
      <x>0</x>
      <y>0</y>
      <width>1195</width>
-     <height>22</height>
+     <height>24</height>
     </rect>
    </property>
    <widget class="QMenu" name="menuMusicas">

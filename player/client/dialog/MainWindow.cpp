@@ -9,13 +9,12 @@ MainWindow::MainWindow(QWidget *parent)
 
     m_player = std::make_unique<Player>(this);
     m_user_dialog = std::make_unique<UserDialog>(this);
-    this->updataPlaylistList();
 
     this->setupTable(ui->tableWidgetSearch);
     this->setupTable(ui->tableWidgetTracks);
     this->setEnabledAllGroupBox(false);
 
-    connect(m_player.get(), &Player::granted, this, &MainWindow::setEnabledAllGroupBox);
+    connect(m_player.get(), &Player::granted, this, &MainWindow::on_granted);
     connect(m_user_dialog.get(), &UserDialog::userConfigChanged, this, &MainWindow::userConfigChanged);
 }
 
@@ -182,5 +181,24 @@ void MainWindow::on_tableWidgetTracks_itemDoubleClicked(QTableWidgetItem *item)
         auto track = m_player->playlistTracks()[item->row()];
         m_player->playlistConfig().removeTrackFromPlaylist(playlist_name, track.trackParameters().id);
         this->updateTrackTable(playlist_name);
+    }
+}
+
+void MainWindow::on_granted()
+{
+    this->setEnabledAllGroupBox(true);
+    this->updataPlaylistList();
+}
+
+void MainWindow::on_pushButtonPlay_clicked()
+{
+    if (ui->tableWidgetTracks->rowCount())
+    {
+        auto track_row = ui->tableWidgetTracks->currentRow() > -1 ? ui->tableWidgetTracks->currentRow() : 0;
+
+        auto current_track = m_player->playlistTracks()[track_row];
+        m_player->playTrack(current_track);
+
+        ui->tableWidgetTracks->setCurrentCell(track_row, 0);
     }
 }

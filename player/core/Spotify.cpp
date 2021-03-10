@@ -87,13 +87,17 @@ QJsonObject Spotify::search(const QString &criteria, SearchType search_type, int
         break;
     }
 
-    return this->requestGet(
+    return this->request(
+        RequestType::get,
         "search?q=" + criteria + "&type=" + q_type + "&limit=" + QString::number(limit) + "&market=from_token");
 }
 
-QJsonObject Spotify::requestGet(const QString &parameters)
+QJsonObject Spotify::request(RequestType request_type, const QString &parameters, const QJsonDocument &body)
 {
-    auto reply = m_spotify_api.get(QUrl(m_user_config.userData().base_url + "/" + parameters));
+
+    auto url = QUrl(m_user_config.userData().base_url + "/" + parameters);
+
+    auto reply = request_type == RequestType::get ? m_spotify_api.get(url) : m_spotify_api.put(url, body.toJson());
 
     while (!reply->isFinished())
     {
@@ -102,7 +106,7 @@ QJsonObject Spotify::requestGet(const QString &parameters)
 
     if (reply->error() != QNetworkReply::NoError)
     {
-        qDebug() << reply->errorString();
+        qDebug() << reply->errorString() << ": " << reply->error();
         return QJsonObject();
     }
     else
@@ -116,6 +120,15 @@ QJsonObject Spotify::requestGet(const QString &parameters)
 QJsonObject Spotify::searchTrack(const QString &criteria, int limit)
 {
     return this->search(criteria, SearchType::track, limit);
+}
+
+void Spotify::playTrack(const QString &uri)
+{
+    QJsonDocument body({
+        QPair<QString, QJsonArray>("context_uri", {QJsonArray::fromStringList(QStringList(uri))}),
+    });
+
+    this->request(RequestType::put, "me/player/play", body);
 }
 
 void Spotify::connectToAPI()

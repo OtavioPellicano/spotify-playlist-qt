@@ -48,9 +48,12 @@ class MainWindow : public QMainWindow
 
     void on_tableWidgetTracks_itemDoubleClicked(QTableWidgetItem *item);
 
-    void setEnabledAllGroupBox(bool enabled);
+    void on_granted();
+
+    void on_pushButtonPlay_clicked();
 
   private:
+    void setEnabledAllGroupBox(bool enabled);
     void setupTable(QTableWidget *table);
     void updataPlaylistList();
     void addTrackToPlaylist(const QString &playlist_name, const TrackParameters &track_parameters);

@@ -45,6 +45,12 @@ QVector<Track> Player::updatePlaylistTracks(const QString playlist_name)
     return tracks;
 }
 
+void Player::playTrack(const Track &track)
+{
+    qDebug() << "Playing... " << track.trackParameters().name;
+    this->playTrack(track.trackParameters().uri);
+}
+
 QStringList Player::playlistNames()
 {
     QSet<QString> playlist_names;

@@ -60,6 +60,7 @@ void PlaylistConfig::updatePlaylistData(const QStringList &str_csv)
     track_param.artist = str_csv[6];
     track_param.artist_id = str_csv[7];
     track_param.duration = str_csv[8].toInt();
+    track_param.uri = str_csv[9];
 
     m_playlist_data[{playlist_name, track_param.id}] = track_param;
 }

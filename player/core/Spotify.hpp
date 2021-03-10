@@ -19,6 +19,7 @@ class Spotify : public QObject
     Q_OBJECT
   public:
     explicit Spotify(QObject *parent = nullptr);
+    void connectToAPI();
 
   private slots:
     void on_granted();
@@ -36,14 +37,20 @@ class Spotify : public QObject
         track
     };
     QJsonObject search(const QString &criteria, SearchType search_type, int limit);
-    QJsonObject requestGet(const QString &parameters);
 
-  public:
+    enum class RequestType
+    {
+        get,
+        put
+    };
+    QJsonObject request(
+        RequestType request_type, const QString &parameters, const QJsonDocument &body = QJsonDocument());
+
+  protected:
     //    QJsonObject search_artist(const QString &criteria);
     //    QJsonObject search_album(const QString &criteria);
     QJsonObject searchTrack(const QString &criteria, int limit);
-
-    void connectToAPI();
+    void playTrack(const QString &track_id);
 
   private:
     UserConfig m_user_config;

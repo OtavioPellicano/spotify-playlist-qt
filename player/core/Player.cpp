@@ -22,6 +22,23 @@ void Player::setTracks(const QJsonObject &json)
     }
 }
 
+QStringList Player::playlistNames()
+{
+    QSet<QString> playlist_names;
+    auto data = this->playlistConfig().data();
+
+    playlist_names.clear();
+    for (auto &playlist_name : data)
+    {
+        playlist_names.insert(playlist_name.first.first);
+    }
+
+    m_playlist_names = playlist_names.values();
+    m_playlist_names.sort(Qt::CaseInsensitive);
+
+    return m_playlist_names;
+}
+
 PlaylistConfig Player::playlistConfig() const
 {
     return m_playlist_config;

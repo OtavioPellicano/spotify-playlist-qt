@@ -53,15 +53,8 @@ void MainWindow::setEnabledAllGroupBox(bool enabled)
 
 void MainWindow::updataPlaylistTable()
 {
-    auto data = m_player->playlistConfig().data();
-
-    m_playlist_names.clear();
-    for (auto &playlist_name : data)
-    {
-        m_playlist_names.insert(playlist_name.first.first);
-    }
     ui->listWidgetPlaylist->clear();
-    ui->listWidgetPlaylist->addItems(m_playlist_names.values());
+    ui->listWidgetPlaylist->addItems(m_player->playlistNames());
 }
 
 void MainWindow::addTrackToPlaylist(const QString &playlist_name, const TrackParameters &track_parameters)

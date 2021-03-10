@@ -22,6 +22,8 @@ class Player : public Spotify
 
     PlaylistConfig playlistConfig() const;
 
+    QStringList playlistNames();
+
   private:
     void setTracks(const QJsonObject &json);
 
@@ -29,6 +31,7 @@ class Player : public Spotify
     QVector<Track> m_search_tracks;
     UserConfig m_user_config;
     PlaylistConfig m_playlist_config;
+    QStringList m_playlist_names;
 };
 
 #endif // PLAYER_HPP

@@ -140,13 +140,15 @@ void MainWindow::on_actionConnectAPI_triggered()
 void MainWindow::on_lineEditSearch_returnPressed()
 {
     ui->lineEditSearch->setEnabled(false);
-    m_search_tracks = m_player->searchTrack(ui->lineEditSearch->text());
+    m_player->searchTrack(ui->lineEditSearch->text());
+
+    const auto &tracks_by_search = m_player->tracksBySearch();
 
     ui->tableWidgetSearch->clearContents();
-    ui->tableWidgetSearch->setRowCount(m_search_tracks.size());
+    ui->tableWidgetSearch->setRowCount(tracks_by_search.size());
 
     std::size_t row = 0;
-    for (auto it_track = m_search_tracks.begin(); it_track != m_search_tracks.end(); ++it_track, ++row)
+    for (auto it_track = tracks_by_search.begin(); it_track != tracks_by_search.end(); ++it_track, ++row)
     {
         ui->tableWidgetSearch->setItem(row, 0, new QTableWidgetItem(it_track->trackParameters().name));
         ui->tableWidgetSearch->setItem(row, 1, new QTableWidgetItem(it_track->trackParameters().artist));
@@ -167,10 +169,11 @@ void MainWindow::on_tableWidgetSearch_cellDoubleClicked(int row, int /*column*/)
     QMessageBox msgbox;
     if (ui->listWidgetPlaylist->currentRow() > -1)
     {
+        const auto &tracks_by_search = m_player->tracksBySearch();
         QString playlist_name = ui->listWidgetPlaylist->currentItem()->text();
-        qDebug() << m_search_tracks[row].trackParameters().toString();
+        qDebug() << tracks_by_search[row].trackParameters().toString();
         auto playlist_row = ui->listWidgetPlaylist->currentRow();
-        this->addTrackToPlaylist(playlist_name, m_search_tracks[row].trackParameters());
+        this->addTrackToPlaylist(playlist_name, tracks_by_search[row].trackParameters());
         ui->listWidgetPlaylist->setCurrentRow(playlist_row);
         this->updateTrackTable(playlist_name);
     }

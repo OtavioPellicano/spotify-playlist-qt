@@ -64,7 +64,6 @@ class MainWindow : public QMainWindow
     std::unique_ptr<UserConfig> m_user_config;
     std::unique_ptr<PlaylistConfig> m_playerlist_config;
     std::unique_ptr<Player> m_player;
-    QVector<Track> m_search_tracks;
     QSet<QString> m_playlist_names;
     QVector<TrackParameters> m_playlist_tracks;
 };

@@ -1,8 +1,8 @@
 ## spotify-playlist-qt
 
-Este projeto apresenta uma aplicação de criação e gerenciamento de Playlist do Spotify utilizando o Qt e a API do Spotify
+Este projeto apresenta uma aplicação de criação e gerenciamento de Playlist do Spotify utilizando o Qt.
 
-## Suporte
+## O que a aplicação suporta
 * Fluxo de Autorização
 * Buscar músicas
 * Criar e remover Playlists

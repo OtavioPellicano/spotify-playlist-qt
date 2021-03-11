@@ -8,14 +8,12 @@ MainWindow::MainWindow(QWidget *parent)
     ui->setupUi(this);
 
     m_player = std::make_unique<Player>(this);
-    m_user_dialog = std::make_unique<UserDialog>(this);
 
     this->setupTable(ui->tableWidgetSearch);
     this->setupTable(ui->tableWidgetTracks);
     this->setEnabledAllGroupBox(false);
 
     connect(m_player.get(), &Player::granted, this, &MainWindow::on_granted);
-    connect(m_user_dialog.get(), &UserDialog::userConfigChanged, this, &MainWindow::userConfigChanged);
 }
 
 MainWindow::~MainWindow()
@@ -30,6 +28,8 @@ void MainWindow::userConfigChanged(const UserData &user_data)
 
 void MainWindow::on_actionUser_triggered()
 {
+    m_user_dialog = std::make_unique<UserDialog>(this);
+    connect(m_user_dialog.get(), &UserDialog::userConfigChanged, this, &MainWindow::userConfigChanged);
     m_user_dialog->exec();
 }
 

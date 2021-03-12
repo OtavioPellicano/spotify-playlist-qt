@@ -67,6 +67,27 @@ class PlaylistConfig
      */
     void updatePlaylistData(const QStringList &str_csv);
 
+    typedef std::pair<QString, QString> Key;
+    /**
+     * @brief eraseIf
+     * This method was inpired by erase_if(std::map) from c++20
+     * @param playlist_data
+     * @param key
+     * the key to compare
+     * @param predicate
+     * A predicate which will compare two keys
+     */
+    void eraseIf(PlaylistData &playlist_data, const Key &key, std::function<bool(const Key &, const Key &)> predicate);
+
+    /**
+     * @brief remover
+     * This method isolate common parts from removePlaylist and removeTrackFromPlaylist
+     * @param playlist_data
+     * @param key
+     * @param predicate
+     */
+    void remover(PlaylistData &playlist_data, const Key &key, std::function<bool(const Key &, const Key &)> predicate);
+
   private:
     PlaylistData m_playlist_data;
     const std::string m_file_name = ".playlist_config";

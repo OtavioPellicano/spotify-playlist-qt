@@ -67,41 +67,37 @@ void PlaylistConfig::updatePlaylistData(const QStringList &str_csv)
 
 void PlaylistConfig::removePlaylist(const QString &playlist_name)
 {
-    this->update();
-
-    for (auto i = m_playlist_data.begin(), last = m_playlist_data.end(); i != last;)
-    {
-        // TODO implement Predicate
-        if (playlist_name == i->first.first)
-        {
-            i = m_playlist_data.erase(i);
-        }
-        else
-        {
-            ++i;
-        }
-    }
-
-    this->savePlaylistData(m_playlist_data);
+    auto playlist_equals = [](const Key &key_1, const Key &key_2) -> bool { return key_1.first == key_2.first; };
+    this->remover(m_playlist_data, Key{playlist_name, ""}, playlist_equals);
 }
 
 void PlaylistConfig::removeTrackFromPlaylist(const QString &playlist_name, const QString &track_id)
 {
-    this->update();
-    auto key = std::pair<QString, QString>{playlist_name, track_id};
+    auto key_equals = [](const Key &key_1, const Key &key_2) -> bool { return key_1 == key_2; };
+    this->remover(m_playlist_data, Key{playlist_name, track_id}, key_equals);
+}
 
-    for (auto i = m_playlist_data.begin(), last = m_playlist_data.end(); i != last;)
+void PlaylistConfig::eraseIf(
+    PlaylistData &playlist_data, const Key &key, std::function<bool(const Key &, const Key &)> predicate)
+{
+    for (auto i = playlist_data.begin(), last = playlist_data.end(); i != last;)
     {
-        // TODO implement Predicate
-        if (key == i->first)
+        if (predicate(i->first, key))
         {
-            i = m_playlist_data.erase(i);
+            i = playlist_data.erase(i);
         }
         else
         {
             ++i;
         }
     }
+}
 
-    this->savePlaylistData(m_playlist_data);
+void PlaylistConfig::remover(
+    PlaylistData &playlist_data, const Key &key, std::function<bool(const Key &, const Key &)> predicate)
+{
+    this->update();
+    this->eraseIf(playlist_data, key, predicate);
+
+    this->savePlaylistData(playlist_data);
 }

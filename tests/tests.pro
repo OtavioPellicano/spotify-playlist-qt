@@ -1,6 +1,7 @@
 QT += testlib
 QT += gui
 CONFIG += qt warn_on depend_includepath testcase
+CONFIG += c++17
 
 TEMPLATE = app
 
@@ -10,6 +11,7 @@ INCLUDEPATH += $$CORE_PATH
 
 SOURCES += \
     $$CORE_PATH/UserConfig.cpp \
+    $$CORE_PATH/PlaylistConfig.cpp \
 
 SOURCES +=  \
     tst_player.cpp

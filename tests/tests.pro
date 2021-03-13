@@ -12,6 +12,7 @@ INCLUDEPATH += $$CORE_PATH
 SOURCES += \
     $$CORE_PATH/UserConfig.cpp \
     $$CORE_PATH/PlaylistConfig.cpp \
+    $$CORE_PATH/Track.cpp \
 
 SOURCES +=  \
     tst_player.cpp

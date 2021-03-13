@@ -40,6 +40,15 @@ TrackParameters track_2{
     "spotify:track:2l9m7wvaWabz7NhaTwBFbZ",
     203625};
 
+TrackParameters track_3{
+    "Eu Sei",
+    "4SMzisVrGggLbPc5TII5pa",
+    "Eu Sei",
+    "19CoivK6bPGL0SC1RZEKfa",
+    "Vk Mac",
+    "62T0up856eHZQ8BE6V6fJs",
+    "spotify:track:4SMzisVrGggLbPc5TII5pa",
+    209747};
 } // namespace TrackSamples
 
 class TestPlayer : public QObject
@@ -53,6 +62,7 @@ class TestPlayer : public QObject
   private slots:
     void test_user_config();
     void test_playlist_config();
+    void test_track();
 };
 
 TestPlayer::TestPlayer()
@@ -122,6 +132,57 @@ void TestPlayer::test_playlist_config()
     QVERIFY(data.find({playlist_name_2, track_1.id}) == data.end());
     QVERIFY(data.find({playlist_name_2, track_2.id}) == data.end());
     QVERIFY(data.size() == 1);
+}
+
+void TestPlayer::test_track()
+{
+    auto track_3 = Track(TrackSamples::track_3);
+    QVERIFY(track_3.trackParameters() == TrackSamples::track_3);
+
+    QByteArray json =
+        "{\n    \"album\": {\n        \"album_type\": \"single\",\n        \"artists\": [\n            {\n             "
+        "   \"external_urls\": {\n                    \"spotify\": "
+        "\"https://open.spotify.com/artist/62T0up856eHZQ8BE6V6fJs\"\n                },\n                \"href\": "
+        "\"https://api.spotify.com/v1/artists/62T0up856eHZQ8BE6V6fJs\",\n                \"id\": "
+        "\"62T0up856eHZQ8BE6V6fJs\",\n                \"name\": \"Vk Mac\",\n                \"type\": \"artist\",\n   "
+        "             \"uri\": \"spotify:artist:62T0up856eHZQ8BE6V6fJs\"\n            },\n            {\n              "
+        "  \"external_urls\": {\n                    \"spotify\": "
+        "\"https://open.spotify.com/artist/6ACyNjY4S7gBFxB4fcmJEQ\"\n                },\n                \"href\": "
+        "\"https://api.spotify.com/v1/artists/6ACyNjY4S7gBFxB4fcmJEQ\",\n                \"id\": "
+        "\"6ACyNjY4S7gBFxB4fcmJEQ\",\n                \"name\": \"Chief\",\n                \"type\": \"artist\",\n    "
+        "            \"uri\": \"spotify:artist:6ACyNjY4S7gBFxB4fcmJEQ\"\n            }\n        ],\n        "
+        "\"external_urls\": {\n            \"spotify\": \"https://open.spotify.com/album/19CoivK6bPGL0SC1RZEKfa\"\n    "
+        "    },\n        \"href\": \"https://api.spotify.com/v1/albums/19CoivK6bPGL0SC1RZEKfa\",\n        \"id\": "
+        "\"19CoivK6bPGL0SC1RZEKfa\",\n        \"images\": [\n            {\n                \"height\": 640,\n         "
+        "       \"url\": \"https://i.scdn.co/image/ab67616d0000b273d44a718140a9dd2c71810ffb\",\n                "
+        "\"width\": 640\n            },\n            {\n                \"height\": 300,\n                \"url\": "
+        "\"https://i.scdn.co/image/ab67616d00001e02d44a718140a9dd2c71810ffb\",\n                \"width\": 300\n       "
+        "     },\n            {\n                \"height\": 64,\n                \"url\": "
+        "\"https://i.scdn.co/image/ab67616d00004851d44a718140a9dd2c71810ffb\",\n                \"width\": 64\n        "
+        "    }\n        ],\n        \"name\": \"Eu Sei\",\n        \"release_date\": \"2021-01-28\",\n        "
+        "\"release_date_precision\": \"day\",\n        \"total_tracks\": 1,\n        \"type\": \"album\",\n        "
+        "\"uri\": \"spotify:album:19CoivK6bPGL0SC1RZEKfa\"\n    },\n    \"artists\": [\n        {\n            "
+        "\"external_urls\": {\n                \"spotify\": "
+        "\"https://open.spotify.com/artist/62T0up856eHZQ8BE6V6fJs\"\n            },\n            \"href\": "
+        "\"https://api.spotify.com/v1/artists/62T0up856eHZQ8BE6V6fJs\",\n            \"id\": "
+        "\"62T0up856eHZQ8BE6V6fJs\",\n            \"name\": \"Vk Mac\",\n            \"type\": \"artist\",\n           "
+        " \"uri\": \"spotify:artist:62T0up856eHZQ8BE6V6fJs\"\n        },\n        {\n            \"external_urls\": "
+        "{\n                \"spotify\": \"https://open.spotify.com/artist/6ACyNjY4S7gBFxB4fcmJEQ\"\n            },\n  "
+        "          \"href\": \"https://api.spotify.com/v1/artists/6ACyNjY4S7gBFxB4fcmJEQ\",\n            \"id\": "
+        "\"6ACyNjY4S7gBFxB4fcmJEQ\",\n            \"name\": \"Chief\",\n            \"type\": \"artist\",\n            "
+        "\"uri\": \"spotify:artist:6ACyNjY4S7gBFxB4fcmJEQ\"\n        }\n    ],\n    \"disc_number\": 1,\n    "
+        "\"duration_ms\": 209747,\n    \"explicit\": false,\n    \"external_ids\": {\n        \"isrc\": "
+        "\"BCIGI2100001\"\n    },\n    \"external_urls\": {\n        \"spotify\": "
+        "\"https://open.spotify.com/track/4SMzisVrGggLbPc5TII5pa\"\n    },\n    \"href\": "
+        "\"https://api.spotify.com/v1/tracks/4SMzisVrGggLbPc5TII5pa\",\n    \"id\": \"4SMzisVrGggLbPc5TII5pa\",\n    "
+        "\"is_local\": false,\n    \"is_playable\": true,\n    \"name\": \"Eu Sei\",\n    \"popularity\": 45,\n    "
+        "\"preview_url\": "
+        "\"https://p.scdn.co/mp3-preview/"
+        "be0ef482cad02a525dbd6a49002ea8706bb42d1f?cid=d3a56a29ae1e429b8677f06bdf972ca4\",\n    \"track_number\": 1,\n  "
+        "  \"type\": \"track\",\n    \"uri\": \"spotify:track:4SMzisVrGggLbPc5TII5pa\"\n}\n";
+
+    auto track_3_json = Track(QJsonDocument::fromJson(json).object());
+    QVERIFY(track_3_json.trackParameters() == track_3.trackParameters());
 }
 
 QTEST_MAIN(TestPlayer)

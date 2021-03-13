@@ -9,8 +9,11 @@
 
 #include "Track.hpp"
 
-//<<Playlist name, track_id>, trackParameters>
-typedef std::map<std::pair<QString, QString>, TrackParameters> PlaylistData;
+//<Playlist name, track_id>
+typedef std::pair<QString, QString> Key;
+
+//<<Key, trackParameters>
+typedef std::map<Key, TrackParameters> PlaylistData;
 
 /**
  * @brief The PlaylistConfig class
@@ -67,7 +70,6 @@ class PlaylistConfig
      */
     void updatePlaylistData(const QStringList &str_csv);
 
-    typedef std::pair<QString, QString> Key;
     /**
      * @brief eraseIf
      * This method was inpired by erase_if(std::map) from c++20
